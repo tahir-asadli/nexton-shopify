@@ -1,0 +1,25 @@
+<!-- Features -->
+<section>
+  <div class="container pt-4 sm:pt-6 md:pt-10 lg:pt-12.5 pb-4 sm:pb-6 lg:pb-8 mb-4 sm:mb-4 lg:mb-6 xl:mb-20">
+    <div class="grid md:grid-cols-2 gap-3 lg:grid-cols-4 border border-brand-silver py-6 rounded-2xl">
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand infos",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "_brand-info"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand infos"
+    }
+  ]
+}
+{% endschema %}

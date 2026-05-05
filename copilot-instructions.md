@@ -1,0 +1,1 @@
+/home/tahir/Documents/GitHub/nexton-shopify/nexton-demo/AGENTS.md

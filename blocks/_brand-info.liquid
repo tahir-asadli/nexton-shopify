@@ -1,0 +1,54 @@
+<div class="flex items-center gap-2 lg:gap-4 px-6 py-1 sm:px-4 md:px-6 lg:py-0 lg:px-8 lg:border-r border-brand-silver">
+  <span class="shrink-0 size-6">
+    {% case block.settings.icon_select %}
+      {% when 'shipping' %}
+        {{ 'icons/shipping.svg' | inline_asset_content }}
+      {% when 'return' %}
+        {{ 'icons/return.svg' | inline_asset_content }}
+      {% when 'globe' %}
+        {{ 'icons/globe.svg' | inline_asset_content }}
+      {% when 'refund' %}
+        {{ 'icons/refund.svg' | inline_asset_content }}
+    {% endcase %}
+  </span>
+  <div>
+    <h4>{{ block.settings.title }}</h4>
+    <p class="text-brand-gray text-xs md:text-sm">{{ block.settings.description }}</p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand info",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "select",
+      "id": "icon_select",
+      "label": "Select Icon",
+      "options": [
+        { "value": "shipping", "label": "Shipping" },
+        { "value": "return", "label": "Return" },
+        { "value": "globe", "label": "Globe" },
+        { "value": "refund", "label": "Refund" }
+      ],
+      "default": "shipping"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand info"
+    }
+  ]
+}
+{% endschema %}
