@@ -12,9 +12,99 @@
     "main": {
       "type": "hello-world",
       "settings": {}
+    },
+    "banner_qaNNPK": {
+      "type": "banner",
+      "blocks": {
+        "banner_content_eT7xTj": {
+          "type": "_banner-content",
+          "name": "Banner Content",
+          "settings": {
+            "title": "The All New Fashion Collection Items",
+            "description": "Starting from: $59.99",
+            "subtitle": "100% Original Products",
+            "button_url": "shopify://collections/automated-collection",
+            "button_text": "Shop Now",
+            "image": "shopify://shop_images/banner.png"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "banner_content_eT7xTj"
+      ],
+      "name": "Banner",
+      "settings": {}
+    },
+    "hero_ge9x4K": {
+      "type": "hero",
+      "name": "Hero",
+      "settings": {
+        "collections": [
+          "automated-collection",
+          "frontpage",
+          "hydrogen"
+        ]
+      }
+    },
+    "brand_infos_EnFhEC": {
+      "type": "brand-infos",
+      "blocks": {
+        "brand_info_kP64Dw": {
+          "type": "_brand-info",
+          "name": "Brand info",
+          "settings": {
+            "title": "Free shipping",
+            "description": "On orders over $50.00",
+            "icon_select": "shipping"
+          },
+          "blocks": {}
+        },
+        "brand_info_CKHQPC": {
+          "type": "_brand-info",
+          "name": "Brand info",
+          "settings": {
+            "title": "Very easy to return",
+            "description": "Just phone number",
+            "icon_select": "return"
+          },
+          "blocks": {}
+        },
+        "brand_info_gVcYpC": {
+          "type": "_brand-info",
+          "name": "Brand info",
+          "settings": {
+            "title": "Worldwide delivery",
+            "description": "Fast delivery worldwide",
+            "icon_select": "globe"
+          },
+          "blocks": {}
+        },
+        "brand_info_6Ee9UF": {
+          "type": "_brand-info",
+          "name": "Brand info",
+          "settings": {
+            "title": "Refunds policy",
+            "description": "60 days return for any reason",
+            "icon_select": "shipping"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "brand_info_kP64Dw",
+        "brand_info_CKHQPC",
+        "brand_info_gVcYpC",
+        "brand_info_6Ee9UF"
+      ],
+      "name": "Brand infos",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "banner_qaNNPK",
+    "hero_ge9x4K",
+    "brand_infos_EnFhEC"
   ]
 }
