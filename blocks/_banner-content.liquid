@@ -1,0 +1,36 @@
+<div>Banner Content</div>
+{% schema %}
+{
+  "name": "Banner Content",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "visible_if": "{{block.settings.use_collection == 'no'}}"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Description",
+      "visible_if": "{{block.settings.use_collection == 'no'}}"
+    },
+    {
+      "type": "select",
+      "id": "use_collection",
+      "label": "Use Collection",
+      "options": [
+        { "value": "yes", "label": "Yes" },
+        { "value": "no", "label": "No" }
+      ],
+      "default": "Yes"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner Content"
+    }
+  ]
+}
+{% endschema %}
