@@ -1,4 +1,28 @@
-<div>Banner Content</div>
+<div class="relative flex items-center py-4 sm:py-6 md:py-8 lg:py-13 pl-6 sm:pl-16 md:pl-20 lg:pl-30">
+  <div class="flex flex-col gap-2 sm:gap-3 md:gap-4 lg:gap-6">
+    <div>
+      <h4 class="text-brand-gray font-medium lg:text-xl mb-4">
+        {{ block.settings.subtitle }}
+      </h4>
+      <h2 class="">{{ block.settings.title }}</h2>
+    </div>
+    <h4 class="text-brand-gray font-normal lg:text-xl">{{ block.settings.description }}</h4>
+    <div class="button-container">
+      <a href="{{ block.settings.button_url }}" class="button  shadow">
+        <span>{{ block.settings.button_text }}</span>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="flex relative justify-end items-center">
+  {% if block.settings.image %}
+    {{
+      block.settings.image
+      | image_url: width: 300
+      | image_tag: class: 'absolute right-0 left-0 m-auto h-30! md:h-50! lg:h-full! w-auto!'
+    }}
+  {% endif %}
+</div>
 {% schema %}
 {
   "name": "Banner Content",
@@ -7,24 +31,32 @@
     {
       "type": "text",
       "id": "title",
-      "label": "Title",
-      "visible_if": "{{block.settings.use_collection == 'no'}}"
+      "label": "Title"
     },
     {
       "type": "text",
       "id": "description",
-      "label": "Description",
-      "visible_if": "{{block.settings.use_collection == 'no'}}"
+      "label": "Description"
     },
     {
-      "type": "select",
-      "id": "use_collection",
-      "label": "Use Collection",
-      "options": [
-        { "value": "yes", "label": "Yes" },
-        { "value": "no", "label": "No" }
-      ],
-      "default": "Yes"
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
     }
   ],
   "presets": [

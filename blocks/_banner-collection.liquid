@@ -1,4 +1,30 @@
-<div>Banner collection</div>
+{% assign prices = block.settings.collection.products | map: 'price_min' %}
+{% assign lowest_price = prices | sort | first %}
+<div class="relative flex items-center py-4 sm:py-6 md:py-8 lg:py-13 pl-6 sm:pl-16 md:pl-20 lg:pl-30">
+  <div class="flex flex-col gap-2 sm:gap-3 md:gap-4 lg:gap-6">
+    <div>
+      <h4 class="text-brand-gray font-medium lg:text-xl mb-4">
+        {{ block.settings.collection.metafields.custom.short_description.value }}
+      </h4>
+      <h2 class="">{{ block.settings.collection.title }}</h2>
+    </div>
+    <h4 class="text-brand-gray font-normal lg:text-xl">Starting from: {{ lowest_price | money }}</h4>
+    <div class="button-container">
+      <a href="{{block.settings.collection.url}}" class="button  shadow">
+        <span>Shop now</span>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="flex relative justify-end items-center">
+  {% if block.settings.collection.image %}
+    {{
+      block.settings.collection.image
+      | image_url: width: 300
+      | image_tag: class: 'absolute right-0 left-0 m-auto h-30 md:h-50 lg:h-full'
+    }}
+  {% endif %}
+</div>
 {% schema %}
 {
   "name": "Banner Collection",

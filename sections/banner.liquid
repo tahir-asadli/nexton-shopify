@@ -2,23 +2,26 @@
 <section>
   <div class="container">
     <div class="grid grid-cols-2 bg-brand-silver-400 py-4 sm:py-6 md:py-8 lg:py-10 rounded-4xl">
-      <div class="relative flex items-center py-4 sm:py-6 md:py-8 lg:py-13 pl-6 sm:pl-16 md:pl-20 lg:pl-30">
-        <div class="flex flex-col gap-2 sm:gap-3 md:gap-4 lg:gap-6">
-          <div>
-            <h4 class="text-brand-gray font-medium lg:text-xl mb-4">100% Original Products</h4>
-            <h2 class="">The All New Fashion Collection Items</h2>
-          </div>
-          <h4 class="text-brand-gray font-normal lg:text-xl">Starting from: $59.99</h4>
-          <div class="button-container">
-            <a href="/collection.html" class="button  shadow">
-              <span>Shop now</span>
-            </a>
+      {% content_for 'blocks' %}
+      {% comment %}
+        <div class="relative flex items-center py-4 sm:py-6 md:py-8 lg:py-13 pl-6 sm:pl-16 md:pl-20 lg:pl-30">
+          <div class="flex flex-col gap-2 sm:gap-3 md:gap-4 lg:gap-6">
+            <div>
+              <h4 class="text-brand-gray font-medium lg:text-xl mb-4">100% Original Products</h4>
+              <h2 class="">The All New Fashion Collection Items</h2>
+            </div>
+            <h4 class="text-brand-gray font-normal lg:text-xl">Starting from: $59.99</h4>
+            <div class="button-container">
+              <a href="/collection.html" class="button  shadow">
+                <span>Shop now</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex relative justify-end items-center">
-        {% comment %} <img class="absolute right-0 left-0 m-auto h-30 md:h-50 lg:h-full" src="assets/images/banner.png" alt=""> {% endcomment %}
-      </div>
+        <div class="flex relative justify-end items-center">
+          {% comment %} <img class="absolute right-0 left-0 m-auto h-30 md:h-50 lg:h-full" src="assets/images/banner.png" alt=""> {% endcomment %}
+        </div>
+      {% endcomment %}
     </div>
   </div>
 </section>
