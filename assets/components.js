@@ -134,6 +134,159 @@ class HeroSlider extends HTMLElement {
 
 customElements.define('hero-slider', HeroSlider)
 
+class MobileMenu extends HTMLElement {
+  constructor() {
+    super();
+    this.open = this.open.bind(this)
+    this.close = this.close.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+  }
+  connectedCallback() {
+    document.addEventListener('click', this.handleClick)
+  }
+  disconnectedCallback() {
+    document.removeEventListener('click', this.handleClick)
+  }
+  handleClick(event) {
+    if (event.target.closest('.open-mobile-menu') && !document.documentElement.classList.add('mobile-menu-open')) {
+      this.open();
+    } else if (!event.target.closest('mobile-menu')) {
+      this.close();
+    }
+  }
+  open() {
+    document.documentElement.classList.add('mobile-menu-open');
+  }
+  close() {
+    document.documentElement.classList.remove('mobile-menu-open');
+  }
+}
+
+customElements.define('mobile-menu', MobileMenu)
+
+class ProductForm extends HTMLElement {
+  constructor() {
+    super();
+    this.quantityInput = this.querySelector("[type=\"number\"]");
+    this.quantityPrice = this.querySelector("[name=\"price\"]");
+    this.addToCartButton = this.querySelector('button[data-add-to-cart]')
+    this.quantities = this.querySelectorAll('span[data-quantity]')
+    this.totals = this.querySelectorAll('span[data-total]')
+    this.productTitle = this.querySelector('h1[data-title]')
+    this.productImage = this.querySelector('img[data-img]')
+    this.thumbnailSlider = this.querySelector('.product-thumbnail-slider')
+    this.mainSlider = this.querySelector('.product-main-slider')
+    this.sliderImages = this.mainSlider.querySelectorAll('li')
+    this.addToCart = this.addToCart.bind(this);
+    this.updateInfo = this.updateInfo.bind(this);
+    this.openImageViewer = this.openImageViewer.bind(this)
+    this.images = this.querySelectorAll('img')
+    this.featuredImage = this.productImage ? this.productImage.src : this.images.length ? this.images[0].src : null;
+
+  }
+
+  connectedCallback() {
+    this.addToCartButton.addEventListener("click", this.addToCart);
+    this.quantityInput.addEventListener("change", this.updateInfo);
+    this.sliderImages?.forEach((sliderImage, index) => {
+      sliderImage.addEventListener('click', this.openImageViewer)
+    })
+
+    var main = new Splide(this.mainSlider, {
+      type: 'fade',
+      rewind: true,
+      pagination: false,
+      arrows: false,
+    });
+
+    // 2. Initialize the thumbnail slider
+    var thumbnails = new Splide(this.thumbnailSlider, {
+      // fixedWidth: 100,
+      fixedHeight: 148,
+      gap: 10,
+      rewind: true,
+      pagination: false,
+      arrows: false,
+      isNavigation: true, // Critical for clickable thumbs
+      direction: 'ttb', // Vertical direction
+      height: '640px', // Must specify a height for vertical mode
+      breakpoints: {
+        640: {
+          fixedWidth: 50,
+          fixedHeight: 60,
+        },
+        768: {
+          fixedWidth: 60,
+          fixedHeight: 60,
+        },
+        1024: {
+          fixedWidth: 70,
+          fixedHeight: 70,
+        },
+        1280: {
+          fixedWidth: 80,
+          fixedHeight: 80,
+        },
+        1536: {
+          fixedWidth: 90,
+          fixedHeight: 90,
+        },
+      },
+    });
+
+    // 3. Sync them
+    main.sync(thumbnails);
+    main.mount();
+    thumbnails.mount();
+  }
+
+  disconnectedCallback() {
+    this.addToCartButton.removeEventListener("click", this.addToCart);
+    this.quantityInput.removeEventListener("change", this.updateInfo);
+    this.sliderImages?.forEach((sliderImage) => {
+      sliderImage.removeEventListener('click', this.openImageViewer)
+    })
+  }
+
+  updateInfo() {
+    this.quantities.forEach((el) => {
+      el.innerHTML = this.quantityInput.value
+    })
+    this.totals.forEach((el) => {
+      el.innerHTML = Math.round(this.quantityInput.value * this.quantityPrice.value * 100) / 100
+    })
+  }
+
+  addToCart(e) {
+    e.preventDefault();
+
+    const items = cart.add({
+      title: this.productTitle.textContent,
+      price: this.quantityPrice.value,
+      quantity: this.quantityInput.value,
+      image: this.featuredImage
+    })
+
+    document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
+      bubbles: true
+    }));
+  }
+
+  openImageViewer(e) {
+    const target = e.target.closest('li');
+    const siblings = Array.from(target.closest('ul').children);
+    const index = siblings.indexOf(target)
+    document.dispatchEvent(new CustomEvent(EVENTS.OPEN_IMAGE_VIEWER, {
+      detail: {
+        index: index
+      },
+      bubbles: true
+    }));
+  }
+
+}
+customElements.define('product-form', ProductForm)
+
 // class CartButton extends HTMLElement {
 //   constructor() {
 //     super();
@@ -420,128 +573,7 @@ customElements.define('hero-slider', HeroSlider)
 // }
 // customElements.define('quantity-input', QuantityInput)
 
-// class ProductForm extends HTMLElement {
-//   constructor() {
-//     super();
-//     this.quantityInput = this.querySelector("[type=\"number\"]");
-//     this.quantityPrice = this.querySelector("[name=\"price\"]");
-//     this.addToCartButton = this.querySelector('button[data-add-to-cart]')
-//     this.quantities = this.querySelectorAll('span[data-quantity]')
-//     this.totals = this.querySelectorAll('span[data-total]')
-//     this.productTitle = this.querySelector('h1[data-title]')
-//     this.productImage = this.querySelector('img[data-img]')
-//     this.thumbnailSlider = this.querySelector('.product-thumbnail-slider')
-//     this.mainSlider = this.querySelector('.product-main-slider')
-//     this.sliderImages = this.mainSlider.querySelectorAll('li')
-//     this.addToCart = this.addToCart.bind(this);
-//     this.updateInfo = this.updateInfo.bind(this);
-//     this.openImageViewer = this.openImageViewer.bind(this)
-//     this.images = this.querySelectorAll('img')
-//     this.featuredImage = this.productImage ? this.productImage.src : this.images.length ? this.images[0].src : null;
 
-//   }
-
-//   connectedCallback() {
-//     this.addToCartButton.addEventListener("click", this.addToCart);
-//     this.quantityInput.addEventListener("change", this.updateInfo);
-//     this.sliderImages?.forEach((sliderImage, index) => {
-//       sliderImage.addEventListener('click', this.openImageViewer)
-//     })
-
-//     var main = new Splide(this.mainSlider, {
-//       type: 'fade',
-//       rewind: true,
-//       pagination: false,
-//       arrows: false,
-//     });
-
-//     // 2. Initialize the thumbnail slider
-//     var thumbnails = new Splide(this.thumbnailSlider, {
-//       // fixedWidth: 100,
-//       fixedHeight: 148,
-//       gap: 10,
-//       rewind: true,
-//       pagination: false,
-//       arrows: false,
-//       isNavigation: true, // Critical for clickable thumbs
-//       direction: 'ttb', // Vertical direction
-//       height: '640px', // Must specify a height for vertical mode
-//       breakpoints: {
-//         640: {
-//           fixedWidth: 50,
-//           fixedHeight: 60,
-//         },
-//         768: {
-//           fixedWidth: 60,
-//           fixedHeight: 60,
-//         },
-//         1024: {
-//           fixedWidth: 70,
-//           fixedHeight: 70,
-//         },
-//         1280: {
-//           fixedWidth: 80,
-//           fixedHeight: 80,
-//         },
-//         1536: {
-//           fixedWidth: 90,
-//           fixedHeight: 90,
-//         },
-//       },
-//     });
-
-//     // 3. Sync them
-//     main.sync(thumbnails);
-//     main.mount();
-//     thumbnails.mount();
-//   }
-
-//   disconnectedCallback() {
-//     this.addToCartButton.removeEventListener("click", this.addToCart);
-//     this.quantityInput.removeEventListener("change", this.updateInfo);
-//     this.sliderImages?.forEach((sliderImage) => {
-//       sliderImage.removeEventListener('click', this.openImageViewer)
-//     })
-//   }
-
-//   updateInfo() {
-//     this.quantities.forEach((el) => {
-//       el.innerHTML = this.quantityInput.value
-//     })
-//     this.totals.forEach((el) => {
-//       el.innerHTML = Math.round(this.quantityInput.value * this.quantityPrice.value * 100) / 100
-//     })
-//   }
-
-//   addToCart(e) {
-//     e.preventDefault();
-
-//     const items = cart.add({
-//       title: this.productTitle.textContent,
-//       price: this.quantityPrice.value,
-//       quantity: this.quantityInput.value,
-//       image: this.featuredImage
-//     })
-
-//     document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
-//       bubbles: true
-//     }));
-//   }
-
-//   openImageViewer(e) {
-//     const target = e.target.closest('li');
-//     const siblings = Array.from(target.closest('ul').children);
-//     const index = siblings.indexOf(target)
-//     document.dispatchEvent(new CustomEvent(EVENTS.OPEN_IMAGE_VIEWER, {
-//       detail: {
-//         index: index
-//       },
-//       bubbles: true
-//     }));
-//   }
-
-// }
-// customElements.define('product-form', ProductForm)
 
 // class ImageViewerWindow extends HTMLElement {
 //   constructor() {
@@ -688,36 +720,6 @@ customElements.define('hero-slider', HeroSlider)
 // }
 
 // customElements.define('price-slider', PriceSlider);
-
-class MobileMenu extends HTMLElement {
-  constructor() {
-    super();
-    this.open = this.open.bind(this)
-    this.close = this.close.bind(this)
-    this.handleClick = this.handleClick.bind(this)
-  }
-  connectedCallback() {
-    document.addEventListener('click', this.handleClick)
-  }
-  disconnectedCallback() {
-    document.removeEventListener('click', this.handleClick)
-  }
-  handleClick(event) {
-    if (event.target.closest('.open-mobile-menu') && !document.documentElement.classList.add('mobile-menu-open')) {
-      this.open();
-    } else if (!event.target.closest('mobile-menu')) {
-      this.close();
-    }
-  }
-  open() {
-    document.documentElement.classList.add('mobile-menu-open');
-  }
-  close() {
-    document.documentElement.classList.remove('mobile-menu-open');
-  }
-}
-
-customElements.define('mobile-menu', MobileMenu)
 
 
 // class ProductFilter extends HTMLElement {

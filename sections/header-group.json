@@ -14,7 +14,20 @@
     "header": {
       "type": "header",
       "settings": {}
+    },
+    "announcement_x9XpMg": {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": {
+        "announcement_text": "Free shipping on orders over $50!",
+        "announcement_link_text": "Shop Now",
+        "announcement_link": "shopify://collections/all",
+        "announcement_dismissible": true
+      }
     }
   },
-  "order": ["header"]
+  "order": [
+    "announcement_x9XpMg",
+    "header"
+  ]
 }

@@ -1,52 +1,259 @@
-{% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
-{% endcomment %}
-
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
-
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
-
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
-
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
-
-    <input type="text" name="quantity" min="1" value="1">
-
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+<!-- Product -->
+<section class="mt-10" section-id="{{ section.id }}" id="main-product">
+  <div class="container">
+    <product-form>
+      {% form 'product', product %}
+        <fieldset>
+          <input type="hidden" name="variant-id" value="{{ product.selected_or_first_available_variant.id }}">
+          <input type="hidden" name="id" value="{{ product.id }}">
+          <div class="grid lg:grid-cols-7 gap-8">
+            <div class="lg:col-span-4 grid grid-cols-[50px_auto] sm:grid-cols-[60px_auto] md:grid-cols-[70px_auto] lg:grid-cols-[80px_auto] xl:grid-cols-[90px_auto] 2xl:grid-cols-[140px_auto] h-60 sm:h-80 md:h-100 lg:h-160 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
+              <div class="product-thumbnail-slider splide h-60 sm:h-80 md:h-100 lg:h-160">
+                <div class="splide__track h-full!">
+                  <ul class="splide__list flex! flex-col!">
+                    {% for image in product.images %}
+                      <li class="splide__slide inline-block w-full rounded-2xl overflow-hidden border! p-0.5 border-transparent [&.is-active]:border-brand-blue!">
+                        <span
+                          data-large="{{  image|image_url: width: 1024, height: 1024}}"
+                          class=""
+                        >
+                          {{
+                            image
+                            | image_url: width: 1024, height: 1024, crop: 'top'
+                            | image_tag: class: 'w-full h-full object-cover rounded-2xl'
+                          }}
+                        </span>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              <div class="min-h-0 product-main-slider splide h-60 sm:h-80 md:h-100 lg:h-160">
+                <div class="splide__track">
+                  <ul class="splide__list">
+                    {% for image in product.images %}
+                      <li class="splide__slide h-60 sm:h-80 md:h-100 lg:h-160">
+                        {{
+                          image
+                          | image_url: width: 1024, height: 1024, crop: 'top'
+                          | image_tag: class: 'w-full h-full object-cover object-top rounded-2xl cursor-pointer'
+                        }}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="lg:col-span-3">
+              <div class="border border-brand-silver rounded-2xl p-8">
+                <h1 class="text-2xl mb-4" data-title>{{ product.title }}</h1>
+                <div class="flex gap-2 justify-between">
+                  <div class="flex gap-2">
+                    <span>
+                      <span class="[&_svg]:size-5 text-brand-yellow">
+                        {{ 'icons/star.svg' | inline_asset_content }}
+                      </span>
+                    </span>
+                    <span class="font-semibold text-brand-gray-400">4.9</span>
+                    <span>·</span>
+                    <a href="#" class="font-medium text-brand-gray-400 underline">124 reviews</a>
+                  </div>
+                  <div class="flex flex-col gap-0.5">
+                    <span class="font-semibold text-2xl">
+                      {{- product.selected_or_first_available_variant.price | money -}}
+                    </span>
+                    {% if product.selected_or_first_available_variant.compare_at_price
+                        > product.selected_or_first_available_variant.price
+                    %}
+                      <span class="text-sm text-brand-gray-400 text-right">
+                        <s>{{- product.selected_or_first_available_variant.compare_at_price | money -}}</s>
+                      </span>
+                      <span class="text-right">
+                        <span class="inline-block mt-1 bg-rose-200 text-rose-700 rounded-full text-12 py-1.5 px-3 leading-none"
+                          >&dash;
+                          {{-
+                            product.selected_or_first_available_variant.compare_at_price
+                            | minus: product.selected_or_first_available_variant.price
+                            | times: 100.0
+                            | divided_by: product.selected_or_first_available_variant.compare_at_price
+                            | round
+                          -}}
+                          %</span
+                        >
+                      </span>
+                    {% endif %}
+                  </div>
+                </div>
+                <div>
+                  <form action="">
+                    <fieldset>
+                      <input type="hidden" name="price" value="169.99">
+                      <div></div>
+                      <div class="mb-2">
+                        <div class="font-semibold mb-2">Color</div>
+                        <div class="flex flex-wrap gap-2">
+                          <div class="radio-button image">
+                            <input name="color" type="radio" id="color-1">
+                            <label
+                              for="color-1"
+                              style="background-image: url(/assets/watches/benrus-3061-bor-3061-ss-s-039-03/variants/benrus-3061-bor-3061-ss-s-039-03.webp)"
+                            ></label>
+                          </div>
+                          <div class="radio-button image">
+                            <input name="color" type="radio" id="color-2">
+                            <label
+                              for="color-2"
+                              style="background-image: url(/assets/watches/benrus-3061-bor-3061-ss-s-039-03/variants/benrus-3061-bu-3061-ss-b-039-01.webp)"
+                            ></label>
+                          </div>
+                          <div class="radio-button image">
+                            <input name="color" type="radio" id="color-3">
+                            <label
+                              for="color-3"
+                              style="background-image: url(/assets/watches/benrus-3061-bor-3061-ss-s-039-03/variants/benrus-3061-gt-3061-ss-g-039-02.webp)"
+                            ></label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mb-2">
+                        <div class="font-semibold mb-2">Material</div>
+                        <div class="flex flex-wrap gap-2">
+                          <div class="radio-button">
+                            <input name="material" type="radio" id="material-titanium">
+                            <label for="material-titanium">Titanium</label>
+                          </div>
+                          <div class="radio-button">
+                            <input name="material" type="radio" id="material-stainless-steel">
+                            <label for="material-stainless-steel">Stainless Steel</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mb-8">
+                        <div class="font-semibold mb-2">Case Size</div>
+                        <div class="flex flex-wrap gap-2">
+                          <div class="radio-button">
+                            <input name="size" type="radio" id="size-40mm">
+                            <label for="size-40mm">40mm</label>
+                          </div>
+                          <div class="radio-button">
+                            <input name="size" type="radio" id="size-34mm">
+                            <label for="size-34mm">34mm</label>
+                          </div>
+                          <div class="radio-button">
+                            <input name="size" type="radio" id="size-43mm">
+                            <label for="size-43mm">43mm</label>
+                          </div>
+                          <div class="radio-button">
+                            <input name="size" type="radio" id="size-44mm">
+                            <label for="size-44mm">44mm</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex justify-between gap-2 items-center mb-8">
+                        <div>
+                          <quantity-input>
+                            <button type="button" data-minus>&minus;</button>
+                            <input type="number" value="1">
+                            <button type="button" data-plus>&plus;</button>
+                          </quantity-input>
+                        </div>
+                        <div>
+                          <button data-add-to-cart class="button lg:h-13">
+                            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M5.33329 7.33337C5.70149 7.33337 5.99996 7.63185 5.99996 8.00004C5.99996 9.10461 6.89539 10 7.99996 10C9.10453 10 9.99996 9.10461 9.99996 8.00004C9.99996 7.63185 10.2984 7.33337 10.6666 7.33337C11.0348 7.33337 11.3333 7.63185 11.3333 8.00004C11.3333 9.84098 9.8409 11.3334 7.99996 11.3334C6.15902 11.3334 4.66663 9.84098 4.66663 8.00004C4.66663 7.63185 4.9651 7.33337 5.33329 7.33337Z" fill="currentColor" />
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M11.3333 4.66663H12.7584C13.8077 4.66663 14.6786 5.47752 14.7534 6.52414L15.1275 11.7625C15.2654 13.692 13.7371 15.3333 11.8027 15.3333H4.19722C2.26275 15.3333 0.734525 13.692 0.872351 11.7625L1.24652 6.52414C1.32128 5.47752 2.19215 4.66663 3.24143 4.66663H4.66661V3.99996C4.66661 2.15902 6.159 0.666626 7.99994 0.666626C9.84088 0.666626 11.3333 2.15902 11.3333 3.99996V4.66663ZM5.99994 4.66663H9.99994V3.99996C9.99994 2.89539 9.10451 1.99996 7.99994 1.99996C6.89537 1.99996 5.99994 2.89539 5.99994 3.99996V4.66663ZM3.24143 5.99996C2.89167 5.99996 2.60138 6.27025 2.57646 6.61912L2.20231 11.8575C2.1196 13.0152 3.03653 14 4.19722 14H11.8027C12.9634 14 13.8803 13.0152 13.7976 11.8575L13.4234 6.61912C13.3985 6.27025 13.1082 5.99996 12.7584 5.99996H3.24143Z" fill="currentColor" />
+                            </svg>
+                            <span> Add to cart </span>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="flex flex-col gap-2">
+                        <div class="flex flex-col gap-2 mb-2 border-b border-brand-silver text-brand-gray pb-4">
+                          <div class="flex justify-between">
+                            <span>$<span data-price>169.99</span> x <span data-quantity>1</span></span>
+                            <span>$<span data-total>169.99</span></span>
+                          </div>
+                          <div class="flex justify-between">
+                            <span>Tax estimate</span>
+                            <span>$0</span>
+                          </div>
+                        </div>
+                        <div class="flex justify-between font-semibold text-brand-black">
+                          <span>Total</span>
+                          <span>$<span data-total>169.99</span></span>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      {% endform %}
+    </product-form>
+  </div>
+</section>
 
 {% schema %}
 {
-  "name": "t:general.product",
+  "name": "Product",
   "settings": [],
   "disabled_on": {
     "groups": ["header", "footer"]
   }
 }
 {% endschema %}
+{% comment %}
+  This section is used in the product template to render product page with
+  media, content, and add-to-cart form.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
+{% endcomment %}
+{% comment %}
+  <div class="product-images">
+    {% for image in product.images %}
+      {% render 'image', class: 'product-image', image: image %}
+    {% endfor %}
+  </div>
+
+  <div class="product-info">
+    <h1>{{ product.title }}</h1>
+    <p>{{ product.price | money }}</p>
+    <p>{{ product.description }}</p>
+  </div>
+
+  <div class="product-form">
+    {% form 'product', product %}
+      {% assign current_variant = product.selected_or_first_available_variant %}
+
+      <select name="id">
+        {% for variant in product.variants %}
+          <option
+            value="{{ variant.id }}"
+            {% if variant == current_variant %}
+              selected="selected"
+            {% endif %}
+          >
+            {{ variant.title }} - {{ variant.price | money }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <input type="text" name="quantity" min="1" value="1">
+
+      <input type="submit" value="Add to cart">
+      {{ form | payment_button }}
+    {% endform %}
+  </div>
+
+  {% schema %}
+  {
+    "name": "t:general.product",
+    "settings": [],
+    "disabled_on": {
+      "groups": ["header", "footer"]
+    }
+  }
+  {% endschema %}
+{% endcomment %}
