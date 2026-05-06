@@ -1,6 +1,6 @@
 <div class="sm:col-span-{{ block.settings.mobile_column_span }} lg:col-span-{{ block.settings.tablet_column_span }} xl:col-span-{{ block.settings.column_span }}">
   {% if block.settings.heading != blank %}
-    <h4 class="text-base font-medium uppercase mb-6.5">{{ block.settings.heading }}</h4>
+    <h5 class="mb-5">{{ block.settings.heading }}</h5>
   {% endif %}
   <div class="flex flex-col gap-{{ block.settings.gap }}">
     {% content_for 'blocks' %}
@@ -23,7 +23,7 @@
       "label": "Column span",
       "min": 1,
       "max": 30,
-      "default": 6
+      "default": 1
     },
     {
       "type": "range",
@@ -31,7 +31,7 @@
       "label": "Tablet column span",
       "min": 1,
       "max": 30,
-      "default": 4
+      "default": 1
     },
     {
       "type": "range",
@@ -39,7 +39,7 @@
       "label": "Mobile column span",
       "min": 1,
       "max": 30,
-      "default": 2
+      "default": 1
     },
     {
       "type": "range",

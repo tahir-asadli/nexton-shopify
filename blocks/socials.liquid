@@ -1,8 +1,54 @@
-<div class="flex gap-3">
-  {{ settings.social_instagram_link }}
-  {% if settings.social_instagram_link != blank %}
-    <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener"> Instagram </a>
-  {% endif %}
+<div>
+  <ul class="flex flex-col gap-4">
+    {% if shop.brand.metafields.social_links.facebook != blank %}
+      <li>
+        <a href="{{ shop.brand.metafields.social_links.facebook }}" class="group flex gap-2 items-center">
+          <span
+            class="transition [&_svg]:size-4 group-hover:text-[#4676ED]"
+          >
+            {{- 'icons/facebook.svg' | inline_asset_content -}}
+          </span>
+          Facebook
+        </a>
+      </li>
+    {% endif %}
+    {% if shop.brand.metafields.social_links.youtube != blank %}
+      <li>
+        <a href="{{ shop.brand.metafields.social_links.youtube }}" class="group flex gap-2 items-center">
+          <span
+            class="transition [&_svg]:size-4 group-hover:text-[#DA0000]"
+          >
+            {{- 'icons/youtube.svg' | inline_asset_content -}}
+          </span>
+          Youtube
+        </a>
+      </li>
+    {% endif %}
+    {% if shop.brand.metafields.social_links.instagram != blank %}
+      <li>
+        <a href="{{ shop.brand.metafields.social_links.instagram }}" class="group flex gap-2 items-center">
+          <span
+            class="transition [&_svg]:size-4 group-hover:text-[#C500E9]"
+          >
+            {{- 'icons/instagram.svg' | inline_asset_content -}}
+          </span>
+          Instagram
+        </a>
+      </li>
+    {% endif %}
+    {% if shop.brand.metafields.social_links.twitter != blank %}
+      <li>
+        <a href="{{ shop.brand.metafields.social_links.twitter }}" class="group flex gap-2 items-center">
+          <span
+            class="transition [&_svg]:size-4 group-hover:text-[#000000]"
+          >
+            {{- 'icons/x.svg' | inline_asset_content -}}
+          </span>
+          X
+        </a>
+      </li>
+    {% endif %}
+  </ul>
 </div>
 
 {% schema %}

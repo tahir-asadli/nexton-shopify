@@ -113,9 +113,9 @@
     </div>
   {% endcomment %}
 </footer>
-<footer class="bg-gray-100 pt-40 -mt-20">
+<footer>
   <div class="container">
-    <div class="grid sm:grid-cols-{{section.settings.mobile_column_count}} lg:grid-cols-{{section.settings.tablet_column_count}} xl:grid-cols-{{section.settings.column_count}} gap-10 pb-14 border-b border-b-black/10">
+    <div class="grid gap-4 sm:grid-cols-{{section.settings.mobile_column_count}} lg:grid-cols-{{section.settings.tablet_column_count}} xl:grid-cols-{{section.settings.column_count}} py-15">
       {% content_for 'blocks' %}
     </div>
   </div>
@@ -131,7 +131,7 @@
       "label": "Column count",
       "min": 1,
       "max": 30,
-      "default": 22
+      "default": 4
     },
     {
       "type": "range",
@@ -147,7 +147,7 @@
       "label": "Mobile column count",
       "min": 1,
       "max": 30,
-      "default": 2
+      "default": 1
     }
   ],
   "blocks": [

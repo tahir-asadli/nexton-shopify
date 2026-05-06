@@ -13,9 +13,83 @@
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "column_a6KWKb": {
+          "type": "column",
+          "name": "Column",
+          "settings": {
+            "heading": "",
+            "column_span": 6,
+            "tablet_column_span": 4,
+            "mobile_column_span": 2,
+            "gap": 6
+          },
+          "blocks": {
+            "socials_QTPxxQ": {
+              "type": "socials",
+              "name": "Socials",
+              "settings": {},
+              "blocks": {}
+            },
+            "logo_FHYCrX": {
+              "type": "logo",
+              "name": "Logo",
+              "settings": {},
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "socials_QTPxxQ",
+            "logo_FHYCrX"
+          ]
+        },
+        "column_DjtYfk": {
+          "type": "column",
+          "name": "Column",
+          "settings": {
+            "heading": "",
+            "column_span": 6,
+            "tablet_column_span": 4,
+            "mobile_column_span": 2,
+            "gap": 6
+          },
+          "blocks": {}
+        },
+        "column_yBcbnW": {
+          "type": "column",
+          "name": "Column",
+          "settings": {
+            "heading": "",
+            "column_span": 6,
+            "tablet_column_span": 4,
+            "mobile_column_span": 2,
+            "gap": 6
+          },
+          "blocks": {}
+        },
+        "column_R6fWb7": {
+          "type": "column",
+          "name": "Column",
+          "settings": {
+            "heading": "",
+            "column_span": 6,
+            "tablet_column_span": 4,
+            "mobile_column_span": 2,
+            "gap": 6
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "column_a6KWKb",
+        "column_DjtYfk",
+        "column_yBcbnW",
+        "column_R6fWb7"
+      ],
       "settings": {
-        "menu": "",
-        "show_payment_icons": true
+        "column_count": 22,
+        "tablet_column_count": 4,
+        "mobile_column_count": 2
       }
     }
   },
