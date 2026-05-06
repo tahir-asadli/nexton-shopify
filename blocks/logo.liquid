@@ -1,0 +1,33 @@
+{% schema %}
+{
+  "name": "Logo",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Logo"
+    }
+  ]
+}
+{% endschema %}
+
+{% if block.settings.logo != blank %}
+  <div class="logo">
+    {%- assign logo_alt = block.settings.logo.alt | default: shop.name | escape -%}
+    {{ block.settings.logo | image_url: width: 160 | image_tag: alt: logo_alt | link_to: routes.root_url }}
+  </div>
+{% elsif shop.brand.logo != blank %}
+  {%- assign logo_alt = shop.brand.logo.alt | default: shop.name | escape -%}
+  <div class="logo">
+    {{ shop.brand.logo | image_url: width: 160 | image_tag: alt: logo_alt | link_to: routes.root_url }}
+  </div>
+{% else %}
+  <div class="logo">
+    {{ shop.name | link_to: routes.root_url }}
+  </div>
+{% endif %}

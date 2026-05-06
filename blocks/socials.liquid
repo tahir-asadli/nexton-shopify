@@ -1,0 +1,19 @@
+<div class="flex gap-3">
+  {{ settings.social_instagram_link }}
+  {% if settings.social_instagram_link != blank %}
+    <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener"> Instagram </a>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Socials",
+  "settings": [],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Socials"
+    }
+  ]
+}
+{% endschema %}
