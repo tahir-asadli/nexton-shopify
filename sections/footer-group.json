@@ -19,39 +19,39 @@
           "name": "Column",
           "settings": {
             "heading": "",
-            "column_span": 6,
-            "tablet_column_span": 4,
-            "mobile_column_span": 2,
-            "gap": 6
+            "column_span": 1,
+            "tablet_column_span": 1,
+            "mobile_column_span": 1,
+            "gap": 5
           },
           "blocks": {
-            "socials_QTPxxQ": {
-              "type": "socials",
-              "name": "Socials",
-              "settings": {},
-              "blocks": {}
-            },
             "logo_FHYCrX": {
               "type": "logo",
               "name": "Logo",
               "settings": {},
               "blocks": {}
+            },
+            "socials_QTPxxQ": {
+              "type": "socials",
+              "name": "Socials",
+              "settings": {},
+              "blocks": {}
             }
           },
           "block_order": [
-            "socials_QTPxxQ",
-            "logo_FHYCrX"
+            "logo_FHYCrX",
+            "socials_QTPxxQ"
           ]
         },
         "column_DjtYfk": {
           "type": "column",
           "name": "Column",
           "settings": {
-            "heading": "",
-            "column_span": 6,
-            "tablet_column_span": 4,
-            "mobile_column_span": 2,
-            "gap": 6
+            "heading": "Getting Started",
+            "column_span": 1,
+            "tablet_column_span": 1,
+            "mobile_column_span": 1,
+            "gap": 5
           },
           "blocks": {}
         },
@@ -59,11 +59,11 @@
           "type": "column",
           "name": "Column",
           "settings": {
-            "heading": "",
-            "column_span": 6,
-            "tablet_column_span": 4,
-            "mobile_column_span": 2,
-            "gap": 6
+            "heading": "Explore",
+            "column_span": 1,
+            "tablet_column_span": 1,
+            "mobile_column_span": 1,
+            "gap": 5
           },
           "blocks": {}
         },
@@ -71,11 +71,11 @@
           "type": "column",
           "name": "Column",
           "settings": {
-            "heading": "",
-            "column_span": 6,
-            "tablet_column_span": 4,
-            "mobile_column_span": 2,
-            "gap": 6
+            "heading": "Community",
+            "column_span": 1,
+            "tablet_column_span": 1,
+            "mobile_column_span": 1,
+            "gap": 5
           },
           "blocks": {}
         }
@@ -87,7 +87,7 @@
         "column_R6fWb7"
       ],
       "settings": {
-        "column_count": 22,
+        "column_count": 4,
         "tablet_column_count": 4,
         "mobile_column_count": 2
       }
