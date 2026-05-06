@@ -53,7 +53,19 @@
             "mobile_column_span": 1,
             "gap": 5
           },
-          "blocks": {}
+          "blocks": {
+            "menu_ffQr9X": {
+              "type": "menu",
+              "name": "Menu",
+              "settings": {
+                "menu": "main-menu"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "menu_ffQr9X"
+          ]
         },
         "column_yBcbnW": {
           "type": "column",
@@ -91,9 +103,37 @@
         "tablet_column_count": 4,
         "mobile_column_count": 2
       }
+    },
+    "footer_info_aC38qC": {
+      "type": "footer-info",
+      "blocks": {
+        "copyright_Dwdebw": {
+          "type": "copyright",
+          "name": "Copyright",
+          "settings": {
+            "text": "© date Shop.Co. All rights reserved."
+          },
+          "blocks": {}
+        },
+        "payments_HEWybC": {
+          "type": "payments",
+          "name": "Payments",
+          "settings": {
+            "show_payment_icons": true
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "copyright_Dwdebw",
+        "payments_HEWybC"
+      ],
+      "name": "Footer Info",
+      "settings": {}
     }
   },
   "order": [
-    "footer"
+    "footer",
+    "footer_info_aC38qC"
   ]
 }
