@@ -4,6 +4,12 @@
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', '500' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', '500' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', '600' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', '600' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', '700' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', '700' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
   :root {
     --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
