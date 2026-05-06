@@ -1,0 +1,30 @@
+{% if block.settings.menu %}
+  <ul class="flex flex-col gap-4">
+    {% for link in block.settings.menu.links %}
+      <li>
+        <a class="transition text-brand-gray hover:text-brand-black" href="{{ link.url }}">
+          {{ link.title }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Menu",
+  "tag": null,
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu"
+    }
+  ]
+}
+{% endschema %}
