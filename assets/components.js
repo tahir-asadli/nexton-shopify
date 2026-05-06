@@ -42,7 +42,7 @@ class SearchBar extends HTMLElement {
 
   connectedCallback() {
     console.log('connectedCallback');
-    
+
     this.input.addEventListener('input', this.handleInput);
     this.clearButton.addEventListener('click', this.handleClear);
     if (this.input.value.trim() !== '') {
@@ -246,7 +246,7 @@ customElements.define('hero-slider', HeroSlider)
 //                     </svg>
 //                   </button>
 //                   <div class="flex items-center ml-auto">
-                    
+
 //                   </div>
 //                 </div>
 //                 </cart-item>`;
@@ -689,35 +689,35 @@ customElements.define('hero-slider', HeroSlider)
 
 // customElements.define('price-slider', PriceSlider);
 
-// class MobileMenu extends HTMLElement {
-//   constructor() {
-//     super();
-//     this.open = this.open.bind(this)
-//     this.close = this.close.bind(this)
-//     this.handleClick = this.handleClick.bind(this)
-//   }
-//   connectedCallback() {
-//     document.addEventListener('click', this.handleClick)
-//   }
-//   disconnectedCallback() {
-//     document.removeEventListener('click', this.handleClick)
-//   }
-//   handleClick(event) {
-//     if (event.target.closest('.open-mobile-menu') && !document.documentElement.classList.add('mobile-menu-open')) {
-//       this.open();
-//     } else if (!event.target.closest('mobile-menu')) {
-//       this.close();
-//     }
-//   }
-//   open() {
-//     document.documentElement.classList.add('mobile-menu-open');
-//   }
-//   close() {
-//     document.documentElement.classList.remove('mobile-menu-open');
-//   }
-// }
+class MobileMenu extends HTMLElement {
+  constructor() {
+    super();
+    this.open = this.open.bind(this)
+    this.close = this.close.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+  }
+  connectedCallback() {
+    document.addEventListener('click', this.handleClick)
+  }
+  disconnectedCallback() {
+    document.removeEventListener('click', this.handleClick)
+  }
+  handleClick(event) {
+    if (event.target.closest('.open-mobile-menu') && !document.documentElement.classList.add('mobile-menu-open')) {
+      this.open();
+    } else if (!event.target.closest('mobile-menu')) {
+      this.close();
+    }
+  }
+  open() {
+    document.documentElement.classList.add('mobile-menu-open');
+  }
+  close() {
+    document.documentElement.classList.remove('mobile-menu-open');
+  }
+}
 
-// customElements.define('mobile-menu', MobileMenu)
+customElements.define('mobile-menu', MobileMenu)
 
 
 // class ProductFilter extends HTMLElement {

@@ -36,5 +36,42 @@
     {{ content_for_layout }}
 
     {% sections 'footer-group' %}
+    <!-- Mobile Menu -->
+    <mobile-menu class="hidden in-[.mobile-menu-open]:block">
+      <div class="flex items-center sm:hidden fixed top-0 left-0 w-[calc(100%-70px)] bg-white/50 backdrop-blur-3xl drop-shadow-2xl z-2 h-full">
+        <div class="w-5/6 h-5/6 mx-auto flex flex-col">
+          <div class="flex justify-center py-10">
+            <a href="{{routes.root_url}}" class="inline-flex rounded-xl">
+              {%- assign logo_alt = shop.brand.logo.alt | default: shop.name | escape -%}
+              {{ shop.brand.logo | image_url: width: 160 | image_tag: alt: logo_alt }}
+            </a>
+          </div>
+          <div class="flex flex-col grow">
+            <ul class="flex flex-col justify-center items-center gap-2 px-10 py-20">
+              <li>
+                <a href="#" class="text-sm text-brand-gray">Home</a>
+              </li>
+              <li>
+                <a href="#" class="text-sm text-brand-gray">Shop</a>
+              </li>
+              <li>
+                <a href="#" class="text-sm text-brand-gray">Collections</a>
+              </li>
+              <li>
+                <a href="#" class="text-sm text-brand-gray">About</a>
+              </li>
+              <li>
+                <a href="#" class="text-sm text-brand-gray">Contact</a>
+              </li>
+            </ul>
+            <div class="mt-auto">
+              <div>
+                <div class="text-xs text-center">Nexton eCommerce. © 2026</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mobile-menu>
   </body>
 </html>
