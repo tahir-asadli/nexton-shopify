@@ -7,6 +7,29 @@ const EVENTS = {
   CLOSE_IMAGE_VIEWER: 'close-image-viewer',
 }
 
+class Announcement extends HTMLElement {
+  constructor() {
+    super();
+    this.closeButton = this.querySelector('button');
+    this.handleCloseButtonClick = this.handleCloseButtonClick.bind(this);
+  }
+
+  connectedCallback() {
+    this.closeButton?.addEventListener('click', this.handleCloseButtonClick);
+    document.body.classList.add('has-announcement');
+  }
+
+  disconnectedCallback() {
+    this.closeButton?.removeEventListener('click', this.handleCloseButtonClick);
+    document.body.classList.remove('has-announcement');
+  }
+
+  handleCloseButtonClick(event) {
+    this.remove();
+  }
+}
+customElements.define('announcement-bar', Announcement);
+
 class SearchBar extends HTMLElement {
   constructor() {
     super();

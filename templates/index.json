@@ -9,33 +9,6 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
-    },
-    "banner_qaNNPK": {
-      "type": "banner",
-      "blocks": {
-        "banner_content_eT7xTj": {
-          "type": "_banner-content",
-          "name": "Banner Content",
-          "settings": {
-            "title": "The All New Fashion Collection Items",
-            "description": "Starting from: $59.99",
-            "subtitle": "100% Original Products",
-            "button_url": "shopify://collections/automated-collection",
-            "button_text": "Shop Now",
-            "image": "shopify://shop_images/banner.png"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "banner_content_eT7xTj"
-      ],
-      "name": "Banner",
-      "settings": {}
-    },
     "hero_ge9x4K": {
       "type": "hero",
       "name": "Hero",
@@ -99,12 +72,34 @@
       ],
       "name": "Brand infos",
       "settings": {}
+    },
+    "banner_qaNNPK": {
+      "type": "banner",
+      "blocks": {
+        "banner_content_eT7xTj": {
+          "type": "_banner-content",
+          "name": "Banner Content",
+          "settings": {
+            "title": "The All New Fashion Collection Items",
+            "description": "Starting from: $59.99",
+            "subtitle": "100% Original Products",
+            "button_url": "shopify://collections/automated-collection",
+            "button_text": "Shop Now",
+            "image": "shopify://shop_images/banner.png"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "banner_content_eT7xTj"
+      ],
+      "name": "Banner",
+      "settings": {}
     }
   },
   "order": [
-    "main",
-    "banner_qaNNPK",
     "hero_ge9x4K",
-    "brand_infos_EnFhEC"
+    "brand_infos_EnFhEC",
+    "banner_qaNNPK"
   ]
 }
