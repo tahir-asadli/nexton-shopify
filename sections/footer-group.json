@@ -11,6 +11,11 @@
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
+    "cart_drawer_mYYY9p": {
+      "type": "cart-drawer",
+      "name": "Card Drawer",
+      "settings": {}
+    },
     "footer": {
       "type": "footer",
       "blocks": {
@@ -134,6 +139,7 @@
   },
   "order": [
     "footer",
-    "footer_info_aC38qC"
+    "footer_info_aC38qC",
+    "cart_drawer_mYYY9p"
   ]
 }
