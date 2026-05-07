@@ -1,0 +1,79 @@
+<!-- Cart Drawer -->
+<cart-drawer>
+  <div
+    data-drawer
+    class="absolute z-3 top-16 max-md:right-0 sm:top-25 w-full md:max-w-100 hidden in-[.cart-drawer-open]:block"
+  >
+    <div
+      data-drawer-container
+      class="max-h-120 overflow-scroll border border-brand-silver bg-white/90 backdrop-blur-sm hide-scrollbar h-0 in-[.cart-drawer-open]:h-auto"
+    >
+      <div data-drawer-container-inner class="flex flex-col">
+        <div data-drawer-content class="px-6 py-6 flex flex-col gap-6 w-fullborder-b border-brand-silver">
+          <div class="flex flex-col gap-3" data-drawer-items>
+            {% for item in cart.items %}
+              <cart-item>
+                <div class="flex gap-3 relative py-2">
+                  <div class="flex w-20 h-20 shrink-0">
+                    {% if item.image %}
+                      {{
+                        item.image
+                        | image_url: width: 150, height: 150
+                        | image_tag: class: 'w-full h-full object-contain'
+                      }}
+                    {% endif %}
+                  </div>
+                  <div class="flex flex-col justify-between">
+                    <h3 class="font-normal text-sm">{{ item.title }}</h3>
+                    <div>
+                      <div class="font-semibold">{{ item.final_price | money }}</div>
+                      {% if item.original_price != item.final_price %}
+                        {% assign price = item.original_price %}
+                        {% if item.variant.compare_at_price > item.original_price %}
+                          {% assign price = item.variant.compare_at_price %}
+                        {% endif %}
+                      {% else %}
+                        {% if item.variant.compare_at_price > item.original_price %}
+                          {% assign price = item.variant.compare_at_price %}
+                        {% endif %}
+                      {% endif %}
+                      <div class="text-sm text-brand-gray">
+                        <s>{{ item.variant.compare_at_price | money }}</s>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    data-remove
+                    class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer"
+                  >
+                    <span class="size-4">
+                      {{ 'icons/bin.svg' | inline_asset_content }}
+                    </span>
+                  </button>
+                  <div class="flex items-center ml-auto"></div>
+                </div>
+              </cart-item>
+            {% endfor %}
+          </div>
+          <div data-drawer-footer class="flex flex-col gap-2 items-center py-3">
+            <a href="/cart.html" class="button gray medium w-60">View cart</a>
+            <a href="/" class="button ghost medium w-60 bg-transparent underline">Continue shopping</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-overlay class="hidden fixed top-0 left-0 bg-transparent w-full h-full z-2"></div>
+</cart-drawer>
+
+{% schema %}
+{
+  "name": "Card Drawer",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Card Drawer"
+    }
+  ]
+}
+{% endschema %}

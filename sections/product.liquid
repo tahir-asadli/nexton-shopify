@@ -4,8 +4,7 @@
     <product-form>
       {% form 'product', product %}
         <fieldset>
-          <input type="hidden" name="variant-id" value="{{ product.selected_or_first_available_variant.id }}">
-          <input type="hidden" name="id" value="{{ product.id }}">
+          <input type="hidden" name="id" id="variant-id" value="{{ product.selected_or_first_available_variant.id }}">
           <div class="grid lg:grid-cols-7 gap-8">
             <div class="lg:col-span-4 grid grid-cols-[50px_auto] sm:grid-cols-[60px_auto] md:grid-cols-[70px_auto] lg:grid-cols-[80px_auto] xl:grid-cols-[90px_auto] 2xl:grid-cols-[140px_auto] h-60 sm:h-80 md:h-100 lg:h-160 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
               <div class="product-thumbnail-slider splide h-60 sm:h-80 md:h-100 lg:h-160">
@@ -85,12 +84,11 @@
                   </div>
                 </div>
                 <div>
-                  <form action="">
-                    <fieldset>
-                      <input type="hidden" name="price" value="169.99">
+                  <fieldset>
+                    {% unless product.has_only_default_variant %}
                       {% for option in product.options_with_values %}
                         <div class="mb-2">
-                          <div class="font-semibold mb-2">Choose {{ option.name }}</div>
+                          <div class="font-semibold mb-2">{{ option.name }}</div>
                           <div class="flex flex-wrap gap-2">
                             {% for value in option.values %}
                               {% if option.name == 'Color' %}
@@ -144,42 +142,62 @@
                           </div>
                         </div>
                       {% endfor %}
-                      <div class="flex justify-between gap-2 items-center mb-8">
-                        <div>
-                          <quantity-input>
-                            <button type="button" data-minus>&minus;</button>
-                            <input type="number" value="1">
-                            <button type="button" data-plus>&plus;</button>
-                          </quantity-input>
-                        </div>
-                        <div>
-                          <button data-add-to-cart class="button lg:h-13">
-                            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M5.33329 7.33337C5.70149 7.33337 5.99996 7.63185 5.99996 8.00004C5.99996 9.10461 6.89539 10 7.99996 10C9.10453 10 9.99996 9.10461 9.99996 8.00004C9.99996 7.63185 10.2984 7.33337 10.6666 7.33337C11.0348 7.33337 11.3333 7.63185 11.3333 8.00004C11.3333 9.84098 9.8409 11.3334 7.99996 11.3334C6.15902 11.3334 4.66663 9.84098 4.66663 8.00004C4.66663 7.63185 4.9651 7.33337 5.33329 7.33337Z" fill="currentColor" />
-                              <path fill-rule="evenodd" clip-rule="evenodd" d="M11.3333 4.66663H12.7584C13.8077 4.66663 14.6786 5.47752 14.7534 6.52414L15.1275 11.7625C15.2654 13.692 13.7371 15.3333 11.8027 15.3333H4.19722C2.26275 15.3333 0.734525 13.692 0.872351 11.7625L1.24652 6.52414C1.32128 5.47752 2.19215 4.66663 3.24143 4.66663H4.66661V3.99996C4.66661 2.15902 6.159 0.666626 7.99994 0.666626C9.84088 0.666626 11.3333 2.15902 11.3333 3.99996V4.66663ZM5.99994 4.66663H9.99994V3.99996C9.99994 2.89539 9.10451 1.99996 7.99994 1.99996C6.89537 1.99996 5.99994 2.89539 5.99994 3.99996V4.66663ZM3.24143 5.99996C2.89167 5.99996 2.60138 6.27025 2.57646 6.61912L2.20231 11.8575C2.1196 13.0152 3.03653 14 4.19722 14H11.8027C12.9634 14 13.8803 13.0152 13.7976 11.8575L13.4234 6.61912C13.3985 6.27025 13.1082 5.99996 12.7584 5.99996H3.24143Z" fill="currentColor" />
-                            </svg>
-                            <span> Add to cart </span>
-                          </button>
-                        </div>
+                    {% endunless %}
+                    <div class="flex justify-between gap-2 items-center mb-8">
+                      <div>
+                        <quantity-input>
+                          <button type="button" data-minus>&minus;</button>
+                          <input
+                            type="number"
+                            name="quantity"
+                            value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                            min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                            {% if product.selected_or_first_available_variant.quantity_rule.max %}
+                              max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                            {% endif %}
+                          >
+                          <button type="button" data-plus>&plus;</button>
+                        </quantity-input>
                       </div>
-                      <div class="flex flex-col gap-2">
-                        <div class="flex flex-col gap-2 mb-2 border-b border-brand-silver text-brand-gray pb-4">
-                          <div class="flex justify-between">
-                            <span>$<span data-price>169.99</span> x <span data-quantity>1</span></span>
-                            <span>$<span data-total>169.99</span></span>
-                          </div>
-                          <div class="flex justify-between">
-                            <span>Tax estimate</span>
-                            <span>$0</span>
-                          </div>
-                        </div>
-                        <div class="flex justify-between font-semibold text-brand-black">
-                          <span>Total</span>
+                      <div>
+                        <button
+                          data-add-to-cart
+                          class="button lg:h-13"
+                          {% unless product.selected_or_first_available_variant.available %}
+                            disabled
+                          {% endunless %}
+                        >
+                          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.33329 7.33337C5.70149 7.33337 5.99996 7.63185 5.99996 8.00004C5.99996 9.10461 6.89539 10 7.99996 10C9.10453 10 9.99996 9.10461 9.99996 8.00004C9.99996 7.63185 10.2984 7.33337 10.6666 7.33337C11.0348 7.33337 11.3333 7.63185 11.3333 8.00004C11.3333 9.84098 9.8409 11.3334 7.99996 11.3334C6.15902 11.3334 4.66663 9.84098 4.66663 8.00004C4.66663 7.63185 4.9651 7.33337 5.33329 7.33337Z" fill="currentColor" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.3333 4.66663H12.7584C13.8077 4.66663 14.6786 5.47752 14.7534 6.52414L15.1275 11.7625C15.2654 13.692 13.7371 15.3333 11.8027 15.3333H4.19722C2.26275 15.3333 0.734525 13.692 0.872351 11.7625L1.24652 6.52414C1.32128 5.47752 2.19215 4.66663 3.24143 4.66663H4.66661V3.99996C4.66661 2.15902 6.159 0.666626 7.99994 0.666626C9.84088 0.666626 11.3333 2.15902 11.3333 3.99996V4.66663ZM5.99994 4.66663H9.99994V3.99996C9.99994 2.89539 9.10451 1.99996 7.99994 1.99996C6.89537 1.99996 5.99994 2.89539 5.99994 3.99996V4.66663ZM3.24143 5.99996C2.89167 5.99996 2.60138 6.27025 2.57646 6.61912L2.20231 11.8575C2.1196 13.0152 3.03653 14 4.19722 14H11.8027C12.9634 14 13.8803 13.0152 13.7976 11.8575L13.4234 6.61912C13.3985 6.27025 13.1082 5.99996 12.7584 5.99996H3.24143Z" fill="currentColor" />
+                          </svg>
+                          <span>
+                            {% if product.selected_or_first_available_variant.available %}
+                              Add to cart
+                            {% else %}
+                              Sold out
+                            {% endif -%}
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                      <div class="flex flex-col gap-2 mb-2 border-b border-brand-silver text-brand-gray pb-4">
+                        <div class="flex justify-between">
+                          <span>$<span data-price>169.99</span> x <span data-quantity>1</span></span>
                           <span>$<span data-total>169.99</span></span>
                         </div>
+                        <div class="flex justify-between">
+                          <span>Tax estimate</span>
+                          <span>$0</span>
+                        </div>
                       </div>
-                    </fieldset>
-                  </form>
+                      <div class="flex justify-between font-semibold text-brand-black">
+                        <span>Total</span>
+                        <span>$<span data-total>169.99</span></span>
+                      </div>
+                    </div>
+                  </fieldset>
                 </div>
               </div>
             </div>
