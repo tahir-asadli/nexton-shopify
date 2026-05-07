@@ -11,10 +11,6 @@
   "type": "header",
   "name": "t:general.header",
   "sections": {
-    "header": {
-      "type": "header",
-      "settings": {}
-    },
     "announcement_x9XpMg": {
       "type": "announcement",
       "name": "Announcement",
@@ -23,6 +19,13 @@
         "announcement_link_text": "Shop Now",
         "announcement_link": "shopify://collections/all",
         "announcement_dismissible": true
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "header_menu": "main-menu",
+        "mobile_menu": "footer"
       }
     }
   },
