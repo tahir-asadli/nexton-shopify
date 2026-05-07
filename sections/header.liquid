@@ -10,8 +10,16 @@
         </a>
       </div>
       <search-bar class="flex justify-center shrink grow-0 md:shrink-0 md:grow max-w-60 sm:max-w-full mx-auto sm:mx-0">
-        <form class="flex justify-center relative md:w-100">
-          <input type="text" class="search-input w-full" name="q" value="" placeholder="Search in products...">
+        <form action="{{ routes.search_url }}" class="flex justify-center relative md:w-100">
+          <input type="hidden" name="type" value="product,page">
+          <input type="hidden" name="options[unavailable_products]" value="hide">
+          <input
+            type="text"
+            class="search-input w-full"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="Search in products..."
+          >
           <span class="size-4 sm:size-5 text-brand-gray absolute left-4 sm:left-6 top-2.5 sm:top-4">
             {{- 'icons/search.svg' | inline_asset_content -}}
           </span>
@@ -43,8 +51,7 @@
             <span
               data-cart-count
               class="absolute -top-1 -right-1 bg-brand-blue size-5 flex justify-center items-center text-white rounded-full font-semibold empty:hidden text-xs"
-              >1</span
-            >
+            ></span>
           </button>
         </cart-button>
       </div>
@@ -52,6 +59,55 @@
   </div>
 </header>
 
+{% assign copy_date = 'now' | date: '%Y' %}
+{% assign copy_text = 'Nexton eCommerce. &copy; date' %}
+<!-- Mobile Menu -->
+<mobile-menu class="hidden in-[.mobile-menu-open]:block">
+  <div class="flex items-center sm:hidden fixed top-0 left-0 w-[calc(100%-70px)] bg-white/50 backdrop-blur-3xl drop-shadow-2xl z-2 h-full">
+    <div class="w-5/6 h-5/6 mx-auto flex flex-col">
+      <div class="flex justify-center py-10">
+        <a href="{{routes.root_url}}" class="inline-flex rounded-xl">
+          {%- assign logo_alt = shop.brand.logo.alt | default: shop.name | escape -%}
+          {{ shop.brand.logo | image_url: width: 160 | image_tag: alt: logo_alt }}
+        </a>
+      </div>
+      <div class="flex flex-col grow">
+        <ul class="flex flex-col justify-center items-center gap-2 px-10 py-20">
+          {% for link in section.settings.mobile_menu.links %}
+            <li>
+              <a class="text-sm transition text-brand-gray hover:text-brand-black" href="{{ link.url }}">
+                {{ link.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+        <div class="mt-auto">
+          <div>
+            <div class="text-xs text-center">{{ copy_text | replace: 'date', copy_date }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</mobile-menu>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "header_menu",
+      "label": "Header menu"
+    },
+    {
+      "type": "link_list",
+      "id": "mobile_menu",
+      "label": "Mobile menu"
+    }
+  ]
+}
+{% endschema %}
 {% comment %}
   <header>
     <h2 class="header__title">
