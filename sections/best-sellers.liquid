@@ -1,0 +1,49 @@
+<!-- Collection grid -->
+<section class="my-5 sm:my-10 md:my-15 lg:my-20">
+  <div class="container">
+    <div class="mb-10">
+      <h2>
+        {% if section.settings.collection %}
+          <a href="{{ section.settings.collection.url }}" class="underline">{{ section.settings.title }}</a>
+        {% endif %}
+        {% if section.settings.subtitle %}
+          <span class="text-brand-gray-400">{{ section.settings.subtitle }}</span>
+        {% endif %}
+      </h2>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
+      {% paginate section.settings.collection.products by 20 %}
+        {% for product in section.settings.collection.products %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      {% endpaginate %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Collection grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sub title"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection grid"
+    }
+  ]
+}
+{% endschema %}

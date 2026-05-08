@@ -10,56 +10,60 @@
     >
       <div data-drawer-container-inner class="flex flex-col">
         <div data-drawer-content class="px-6 py-6 flex flex-col gap-6 w-fullborder-b border-brand-silver">
-          <div class="flex flex-col gap-3" data-drawer-items>
-            {% for item in cart.items %}
-              <cart-item>
-                <div class="flex gap-3 relative py-2">
-                  <div class="flex w-20 h-20 shrink-0">
-                    {% if item.image %}
-                      {{
-                        item.image
-                        | image_url: width: 150, height: 150
-                        | image_tag: class: 'w-full h-full object-contain'
-                      }}
-                    {% endif %}
-                  </div>
-                  <div class="flex flex-col justify-between">
-                    <h3 class="font-normal text-sm pr-2">
-                      {{ item.title }} - <b>{{ item.quantity }}</b>
-                    </h3>
-                    <div class="flex flex-wrap gap-3 items-center">
-                      <div class="font-semibold">{{ item.final_price | money }}</div>
-                      {% if item.original_price != item.final_price %}
-                        {% if item.variant.compare_at_price > item.original_price %}
-                          <div class="text-sm text-brand-gray">
-                            <s>{{ item.variant.compare_at_price | money }}</s>
-                          </div>
-                        {% endif %}
-                      {% else %}
-                        {% if item.variant.compare_at_price > item.original_price %}
-                          <div class="text-sm text-brand-gray">
-                            <s>{{ item.variant.compare_at_price | money }}</s>
-                          </div>
-                        {% endif %}
+          {% if cart.items %}
+            <div class="flex flex-col gap-3" data-drawer-items>
+              {% for item in cart.items %}
+                <cart-item data-key="{{ item.key }}">
+                  <div class="flex gap-3 relative py-2">
+                    <div class="flex w-20 h-20 shrink-0">
+                      {% if item.image %}
+                        {{
+                          item.image
+                          | image_url: width: 150, height: 150
+                          | image_tag: class: 'w-full h-full object-contain'
+                        }}
                       {% endif %}
                     </div>
+                    <div class="flex flex-col justify-between">
+                      <h3 class="font-normal text-sm pr-2">
+                        {{ item.title }} - <b>{{ item.quantity }}</b>
+                      </h3>
+                      <div class="flex flex-wrap gap-3 items-center">
+                        <div class="font-semibold">{{ item.final_price | money }}</div>
+                        {% if item.original_price != item.final_price %}
+                          {% if item.variant.compare_at_price > item.original_price %}
+                            <div class="text-sm text-brand-gray">
+                              <s>{{ item.variant.compare_at_price | money }}</s>
+                            </div>
+                          {% endif %}
+                        {% else %}
+                          {% if item.variant.compare_at_price > item.original_price %}
+                            <div class="text-sm text-brand-gray">
+                              <s>{{ item.variant.compare_at_price | money }}</s>
+                            </div>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    </div>
+                    <button
+                      data-remove
+                      class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer"
+                    >
+                      <span class="size-4">
+                        {{ 'icons/bin.svg' | inline_asset_content }}
+                      </span>
+                    </button>
+                    <div class="flex items-center ml-auto"></div>
                   </div>
-                  <button
-                    data-remove
-                    class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer"
-                  >
-                    <span class="size-4">
-                      {{ 'icons/bin.svg' | inline_asset_content }}
-                    </span>
-                  </button>
-                  <div class="flex items-center ml-auto"></div>
-                </div>
-              </cart-item>
-            {% endfor %}
-          </div>
+                </cart-item>
+              {% endfor %}
+            </div>
+          {% endif %}
           <div data-drawer-footer class="flex flex-col gap-2 items-center py-3">
-            <a href="/cart.html" class="button gray medium w-60">View cart</a>
-            <a href="/" class="button ghost medium w-60 bg-transparent underline">Continue shopping</a>
+            <a href="{{ routes.cart_url }}" class="button gray medium w-60">View cart</a>
+            <a href="{{routes.all_products_collection_url}}" class="button ghost medium w-60 bg-transparent underline"
+              >Continue shopping</a
+            >
           </div>
         </div>
       </div>

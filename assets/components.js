@@ -311,7 +311,6 @@ class ProductForm extends HTMLElement {
       }],
       sections: 'cart-drawer'
     }
-    console.log('formData', formData);
     fetch(url, {
       method: 'POST',
       body: JSON.stringify(formData),
@@ -555,32 +554,81 @@ class CartButton extends HTMLElement {
 customElements.define('cart-button', CartButton)
 
 
-// class CartItem extends HTMLElement {
-//   constructor() {
-//     super();
-//     this.removeButton = this.querySelector('[data-remove]');
-//     this.removeItem = this.removeItem.bind(this);
-//   }
+class CartItem extends HTMLElement {
+  constructor() {
 
-//   connectedCallback() {
-//     this.removeButton.addEventListener('click', this.removeItem, true)
-//   }
+    super();
+    this.removeButton = this.querySelector('[data-remove]');
+    this.itemKey = this.dataset.key;
+    this.removeItem = this.removeItem.bind(this);
+  }
+
+  connectedCallback() {
+    this.removeButton.addEventListener('click', this.removeItem, true)
+  }
 
 
-//   disconnectedCallback() {
-//     this.removeButton.removeEventListener('click', this.removeItem)
-//   }
+  disconnectedCallback() {
+    this.removeButton.removeEventListener('click', this.removeItem)
+  }
 
-//   removeItem() {
-//     const items = cart.remove(this.dataset.index);
-//     this.removeButton.closest('cart-item').remove();
-//     document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
-//       bubbles: true
-//     }));
-//   }
-// }
+  removeItem() {
+    const url = '/cart/change.js';
+    const formData = {
+      quantity: 0,
+      id: this.itemKey,
+      sections: 'cart-drawer'
+    }
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(data => {
+            throw new Error(data.description || 'Could not add item to cart');
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data?.sections["cart-drawer"]) {
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer) {
+            cartDrawer.parentNode.innerHTML = data?.sections["cart-drawer"];
+          }
+        }
+        document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
+          detail: {
+            type: 'success',
+            message: 'Product removed from the cart.',
+          }, bubbles: true
+        }));
+        document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
+          bubbles: true
+        }));
+      })
+      .catch(err => {
+        document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
+          detail: {
+            type: 'error',
+            message: err,
+          }, bubbles: true
+        }));
+      })
 
-// customElements.define('cart-item', CartItem)
+    // const items = cart.remove(this.dataset.index);
+    // this.removeButton.closest('cart-item').remove();
+    // document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
+    //   bubbles: true
+    // }));
+  }
+}
+
+customElements.define('cart-item', CartItem)
 
 // class SplideExplore extends HTMLElement {
 //   constructor() {
