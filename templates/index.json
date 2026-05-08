@@ -95,11 +95,21 @@
       ],
       "name": "Banner",
       "settings": {}
+    },
+    "best_sellers_4h3XiB": {
+      "type": "best-sellers",
+      "name": "Collection grid",
+      "settings": {
+        "title": "Best Sellers.",
+        "subtitle": "Best selling of the month",
+        "collection": "automated-collection"
+      }
     }
   },
   "order": [
     "hero_ge9x4K",
     "brand_infos_EnFhEC",
-    "banner_qaNNPK"
+    "banner_qaNNPK",
+    "best_sellers_4h3XiB"
   ]
 }
