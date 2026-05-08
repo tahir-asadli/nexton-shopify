@@ -24,22 +24,24 @@
                     {% endif %}
                   </div>
                   <div class="flex flex-col justify-between">
-                    <h3 class="font-normal text-sm">{{ item.title }}</h3>
-                    <div>
+                    <h3 class="font-normal text-sm pr-2">
+                      {{ item.title }} - <b>{{ item.quantity }}</b>
+                    </h3>
+                    <div class="flex flex-wrap gap-3 items-center">
                       <div class="font-semibold">{{ item.final_price | money }}</div>
                       {% if item.original_price != item.final_price %}
-                        {% assign price = item.original_price %}
                         {% if item.variant.compare_at_price > item.original_price %}
-                          {% assign price = item.variant.compare_at_price %}
+                          <div class="text-sm text-brand-gray">
+                            <s>{{ item.variant.compare_at_price | money }}</s>
+                          </div>
                         {% endif %}
                       {% else %}
                         {% if item.variant.compare_at_price > item.original_price %}
-                          {% assign price = item.variant.compare_at_price %}
+                          <div class="text-sm text-brand-gray">
+                            <s>{{ item.variant.compare_at_price | money }}</s>
+                          </div>
                         {% endif %}
                       {% endif %}
-                      <div class="text-sm text-brand-gray">
-                        <s>{{ item.variant.compare_at_price | money }}</s>
-                      </div>
                     </div>
                   </div>
                   <button

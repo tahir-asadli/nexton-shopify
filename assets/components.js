@@ -5,6 +5,8 @@ const EVENTS = {
   CLOSE_CART_DRAWER: 'close-cart-drawer',
   OPEN_IMAGE_VIEWER: 'open-image-viewer',
   CLOSE_IMAGE_VIEWER: 'close-image-viewer',
+  SHOW_NOTIFICATION: 'show-notification',
+  HIDE_NOTIFICATION: 'hide-notification',
 }
 
 class Announcement extends HTMLElement {
@@ -29,6 +31,39 @@ class Announcement extends HTMLElement {
   }
 }
 customElements.define('announcement-bar', Announcement);
+
+class Notification extends HTMLElement {
+  constructor() {
+    super();
+    this.messageEl = this.querySelector('span[data-message]');
+    this.containerEl = this.querySelector('.container');
+    this.open = this.open.bind(this);
+    this.close = this.close.bind(this);
+  }
+  open(e) {
+    this.messageEl.innerHTML = e.detail.message;
+    this.containerEl.classList.remove(e.detail.type == 'error' ? 'success' : 'error')
+    this.containerEl.classList.add(e.detail.type == 'success' ? 'success' : 'error')
+    this.style.display = 'block'
+  }
+  close() {
+    this.style.display = 'none'
+    this.messageEl.innerHTML = '';
+    this.containerEl.classList.remove('success')
+    this.containerEl.classList.remove('error')
+  }
+  connectedCallback() {
+    document.addEventListener(EVENTS.SHOW_NOTIFICATION, this.open);
+    document.addEventListener(EVENTS.HIDE_NOTIFICATION, this.close);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener(EVENTS.SHOW_NOTIFICATION, this.open);
+    document.removeEventListener(EVENTS.HIDE_NOTIFICATION, this.close);
+  }
+}
+
+customElements.define('notification-bar', Notification)
 
 class SearchBar extends HTMLElement {
   constructor() {
@@ -270,8 +305,11 @@ class ProductForm extends HTMLElement {
     this.fieldset.disabled = true;
     const url = '/cart/add.js';
     const formData = {
-      quantity: this.quantityInput.value,
-      id: this.variantIdInput.value
+      items: [{
+        quantity: this.quantityInput.value,
+        id: this.variantIdInput.value
+      }],
+      sections: 'cart-drawer'
     }
     console.log('formData', formData);
     fetch(url, {
@@ -290,35 +328,37 @@ class ProductForm extends HTMLElement {
         return res.json();
       })
       .then(data => {
-        document.dispatchEvent(new CustomEvent(EVENTS.PRODUCT_ADDED, {
+        console.log('data', data?.sections["cart-drawer"]);
+        if (data?.sections["cart-drawer"]) {
+
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer) {
+            cartDrawer.parentNode.innerHTML = data?.sections["cart-drawer"];
+          }
+        }
+        document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
           detail: {
             type: 'success',
-            message: 'Added to cart!',
+            message: 'Product added to the cart.',
           }, bubbles: true
         }));
-
-        // document.dispatchEvent(new CustomEvent('update-cart-button', { bubbles: true }));
+        document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
+          bubbles: true
+        }));
       })
       .catch(err => {
-        document.dispatchEvent(new CustomEvent('show-notification', {
+        document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
           detail: {
             type: 'error',
-            message: 'Error adding to cart!',
+            message: err,
           }, bubbles: true
         }));
-        console.error('Error adding to cart:', err);
       })
       .finally(() => {
-
-        // document.body.dispatchEvent(new CustomEvent('product-dialog-close', {
-        //   bubbles: true
-        // }));
         this.fieldset.disabled = false;
       });
 
-    document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
-      bubbles: true
-    }));
+
   }
 
   openImageViewer(e) {
@@ -426,36 +466,36 @@ class CartDrawer extends HTMLElement {
 
     document.documentElement.classList.add('cart-drawer-open');
     // const items = cart.items();
-    if (items.length) {
-      this.drawerItems.innerHTML = ''
-      items.map((item, index) => {
-        this.drawerItems.innerHTML += `<cart-item data-index="${index}">
-        <div class="flex gap-3 relative py-2">
-                  <div class="flex w-20 h-20 shrink-0">
-                    <img class="w-full h-full object-contain" src="${item.image}" alt="">
-                  </div>
-                  <div class="flex flex-col justify-between">
-                    <h3 class="font-normal text-sm">${item.title}</h3>
-                   <div>
-                      <div class="font-semibold">$${item.price}</div>
-                      <div class="text-sm text-brand-gray"><s>$${item.price}</s></div>
-                    </div>
-                  </div>
-                  <button data-remove class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer">
-                    <svg class="size-4" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M216,50H174V40a22,22,0,0,0-22-22H104A22,22,0,0,0,82,40V50H40a6,6,0,0,0,0,12H50V208a14,14,0,0,0,14,14H192a14,14,0,0,0,14-14V62h10a6,6,0,0,0,0-12ZM94,40a10,10,0,0,1,10-10h48a10,10,0,0,1,10,10V50H94ZM194,208a2,2,0,0,1-2,2H64a2,2,0,0,1-2-2V62H194ZM110,104v64a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Zm48,0v64a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Z"></path>
-                    </svg>
-                  </button>
-                  <div class="flex items-center ml-auto">
+    // if (items.length) {
+    //   this.drawerItems.innerHTML = ''
+    //   items.map((item, index) => {
+    //     this.drawerItems.innerHTML += `<cart-item data-index="${index}">
+    //     <div class="flex gap-3 relative py-2">
+    //               <div class="flex w-20 h-20 shrink-0">
+    //                 <img class="w-full h-full object-contain" src="${item.image}" alt="">
+    //               </div>
+    //               <div class="flex flex-col justify-between">
+    //                 <h3 class="font-normal text-sm">${item.title}</h3>
+    //                <div>
+    //                   <div class="font-semibold">$${item.price}</div>
+    //                   <div class="text-sm text-brand-gray"><s>$${item.price}</s></div>
+    //                 </div>
+    //               </div>
+    //               <button data-remove class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer">
+    //                 <svg class="size-4" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+    //                   <path d="M216,50H174V40a22,22,0,0,0-22-22H104A22,22,0,0,0,82,40V50H40a6,6,0,0,0,0,12H50V208a14,14,0,0,0,14,14H192a14,14,0,0,0,14-14V62h10a6,6,0,0,0,0-12ZM94,40a10,10,0,0,1,10-10h48a10,10,0,0,1,10,10V50H94ZM194,208a2,2,0,0,1-2,2H64a2,2,0,0,1-2-2V62H194ZM110,104v64a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Zm48,0v64a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Z"></path>
+    //                 </svg>
+    //               </button>
+    //               <div class="flex items-center ml-auto">
 
-                  </div>
-                </div>
-                </cart-item>`;
+    //               </div>
+    //             </div>
+    //             </cart-item>`;
 
-      })
-    } else {
-      this.drawerItems.innerHTML = `<div class="py-6 text-center text-brand-gray">Cart is empty</div>`;
-    }
+    //   })
+    // } else {
+    //   this.drawerItems.innerHTML = `<div class="py-6 text-center text-brand-gray">Cart is empty</div>`;
+    // }
     const contentHeight = this.drawerContainerInner.scrollHeight;
 
     this.drawerContainer.style.height = (contentHeight) + 'px';
