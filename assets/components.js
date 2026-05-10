@@ -7,6 +7,8 @@ const EVENTS = {
   CLOSE_IMAGE_VIEWER: 'close-image-viewer',
   SHOW_NOTIFICATION: 'show-notification',
   HIDE_NOTIFICATION: 'hide-notification',
+  OPEN_PRODUCT_DIALOG: 'open-product-dialog',
+  CLOSE_PRODUCT_DIALOG: 'close-product-dialog',
 }
 
 class Announcement extends HTMLElement {
@@ -18,12 +20,12 @@ class Announcement extends HTMLElement {
 
   connectedCallback() {
     this.closeButton?.addEventListener('click', this.handleCloseButtonClick);
-    document.body.classList.add('has-announcement');
+    document.documentElement.classList.add('has-announcement');
   }
 
   disconnectedCallback() {
     this.closeButton?.removeEventListener('click', this.handleCloseButtonClick);
-    document.body.classList.remove('has-announcement');
+    document.documentElement.classList.remove('has-announcement');
   }
 
   handleCloseButtonClick(event) {
@@ -344,6 +346,9 @@ class ProductForm extends HTMLElement {
         document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
           bubbles: true
         }));
+        document.dispatchEvent(new CustomEvent(EVENTS.CLOSE_PRODUCT_DIALOG, {
+          bubbles: true
+        }));
       })
       .catch(err => {
         document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
@@ -373,7 +378,176 @@ class ProductForm extends HTMLElement {
   }
 
 }
+
 customElements.define('product-form', ProductForm)
+
+class ProductCard extends HTMLElement {
+  constructor() {
+    super();
+    this.button = this.querySelector('button')
+    this.type = this.button?.dataset.type;
+    this.variantId = this.button?.dataset.variantId;
+    this.productHandle = this.button?.dataset.productHandle;
+    this.handleClick = this.handleClick.bind(this);
+  }
+  connectedCallback() {
+    this.button?.addEventListener('click', this.handleClick);
+  }
+
+  disconnectedCallback() {
+    this.button?.removeEventListener('click', this.handleClick);
+  }
+
+  handleClick() {
+
+    if (this.type == 'choose-options') {
+      this.button.classList.remove('adding')
+      document.dispatchEvent(new CustomEvent(EVENTS.OPEN_PRODUCT_DIALOG, {
+        detail: {
+          productHandle: this.productHandle
+        },
+        bubbles: true
+      }));
+
+    } else {
+      const url = '/cart/add.js';
+      this.button.classList.add('adding')
+      const formData = {
+        items: [{
+          quantity: 1,
+          id: this.variantId
+        }],
+        sections: 'cart-drawer'
+      }
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(res => {
+          if (!res.ok) {
+            return res.json().then(data => {
+              throw new Error(data.description || 'Could not add item to cart');
+            });
+          }
+          return res.json();
+        })
+        .then(data => {
+          console.log('data', data?.sections["cart-drawer"]);
+          if (data?.sections["cart-drawer"]) {
+
+            const cartDrawer = document.querySelector('cart-drawer');
+            if (cartDrawer) {
+              cartDrawer.parentNode.innerHTML = data?.sections["cart-drawer"];
+            }
+          }
+          document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
+            detail: {
+              type: 'success',
+              message: 'Product added to the cart.',
+            }, bubbles: true
+          }));
+          document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
+            bubbles: true
+          }));
+          document.dispatchEvent(new CustomEvent(EVENTS.CLOSE_PRODUCT_DIALOG, {
+            bubbles: true
+          }));
+        })
+        .catch(err => {
+          document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
+            detail: {
+              type: 'error',
+              message: err,
+            }, bubbles: true
+          }));
+        }).finally(() => {
+          this.button.classList.remove('adding')
+        })
+    }
+  }
+
+}
+
+customElements.define('product-card', ProductCard)
+
+class ProductDialog extends HTMLElement {
+  constructor() {
+    super();
+    this.dialog = this.querySelector('dialog');
+    this.dialogContent = this.dialog.querySelector('.dialog-content');
+    this.dialogMessage = this.dialog.querySelector('.dialog-message');
+    this.closeButton = this.dialog.querySelector('#close-dialog');
+    this.openDialog = this.openDialog.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
+    this.loadProduct = this.loadProduct.bind(this);
+  }
+  connectedCallback() {
+    this.closeButton?.addEventListener('click', this.closeDialog);
+    document.addEventListener(EVENTS.OPEN_PRODUCT_DIALOG, this.openDialog);
+    document.addEventListener(EVENTS.CLOSE_PRODUCT_DIALOG, this.closeDialog);
+    this.dialog.addEventListener('close', this.closeDialog);
+  }
+
+  disconnectedCallback() {
+    this.closeButton?.removeEventListener('click', this.closeDialog);
+    document.removeEventListener(EVENTS.OPEN_PRODUCT_DIALOG, this.openDialog);
+    document.removeEventListener(EVENTS.CLOSE_PRODUCT_DIALOG, this.closeDialog);
+    this.dialog.removeEventListener('close', this.closeDialog);
+  }
+  closeDialog() {
+    this.dialog.close();
+    document.documentElement.classList.remove('dialog-open');
+    this.dialogContent.innerHTML = '';
+    this.dialogMessage.innerHTML = '';
+  }
+
+  openDialog(e) {
+    this.dialogMessage.innerHTML = 'Loading';
+    this.dialog.showModal();
+    document.documentElement.classList.add('dialog-open');
+    this.loadProduct(e.detail.productHandle)
+  }
+
+  loadProduct(productHandle) {
+    const url = `/products/${productHandle}`;
+    fetch(url)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch product dialog content');
+        }
+        return res.text();
+      })
+      .then(html => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const productForm = tempDiv.querySelector('#main-product');
+        if (productForm) {
+          // this.dialog.querySelector('.dialog-content').innerHTML = productForm.outerHTML;
+          this.dialogContent.innerHTML = productForm.outerHTML;
+          this.dialogMessage.innerHTML = '';
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching product dialog content:', err);
+        this.dialogMessage.innerHTML = err;
+        // document.dispatchEvent(new CustomEvent('show-notification', {
+        //   detail: {
+        //     type: 'error',
+        //     message: 'Error loading product details!',
+        //   }, bubbles: true
+        // }));
+      });
+  }
+
+}
+
+customElements.define('product-dialog', ProductDialog)
+
+
+
 
 class QuantityInput extends HTMLElement {
   constructor() {

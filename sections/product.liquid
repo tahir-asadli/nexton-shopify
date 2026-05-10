@@ -1,6 +1,6 @@
 <!-- Product -->
 <section class="mt-10" section-id="{{ section.id }}" id="main-product">
-  <div class="container">
+  <div class="container" id="main-product">
     <product-form>
       {% form 'product', product %}
         <fieldset>
@@ -46,7 +46,7 @@
             <div class="lg:col-span-3">
               <div class="border border-brand-silver rounded-2xl p-8">
                 <h1 class="text-2xl mb-4" data-title>{{ product.title }}</h1>
-                <div class="flex gap-2 justify-between">
+                <div class="flex gap-2 justify-between mb-2">
                   <div class="flex gap-2">
                     <span>
                       <span class="[&_svg]:size-5 text-brand-yellow">

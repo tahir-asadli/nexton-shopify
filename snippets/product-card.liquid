@@ -8,7 +8,7 @@
   <div class="product-cart h-full max-w-77.5 relative border border-brand-silver-400 rounded-2xl overflow-hidden">
     <a
       href="{{product.selected_or_first_available_variant.url}}"
-      class="flex w-full h-40 sm:h-60 md:h-70 lg:h-85 [&amp;_img]:w-full [&amp;_img]:h-full [&amp;_img]:object-contain"
+      class="flex w-full h-40 sm:h-60 md:h-70 lg:h-85 [&_img]:w-full [&_img]:h-full [&_img]:object-contain"
     >
       <img
         src="{{ featured_image | image_url: width: 300, height: 340, crop: 'top' }}"
@@ -43,15 +43,24 @@
       <div class="text-xs md:text-sm text-brand-gray"><span class="text-orange-300 text-xl">★</span>4.9(98)</div>
     </div>
     <button
-      data-add-to-cart=""
+      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      data-product-handle="{{ product.handle }}"
+      data-type="{%- if product.variants.size > 1 -%}choose-options{%- else -%}add-to-cart{%- endif -%}"
       class="button cloud p-0 max-w-9 h-9 flex gap-0 overflow-hidden justify-start items-center absolute top-4 right-4 group transition-all hover:justify-between hover:max-w-full duration-500 text-nowrap delay-[0]"
     >
       <span class="px-2.5 flex items-center">
-        <span class="flex items-center size-4 shrink-0 relative -top-px -left-px">
+        <span class="flex items-center size-4 [&_svg]:absolute [&_svg]:inset-0 [&_svg]:size-4 shrink-0 relative -top-px -left-px in-[.adding]:hidden">
           {{ 'icons/basket.svg' | inline_asset_content }}
         </span>
+        <span class="items-center size-4 [&_svg]:absolute [&_svg]:inset-0 [&_svg]:size-4 shrink-0 relative -top-px -left-px spin hidden in-[.adding]:flex">
+          {{ 'icons/loading.svg' | inline_asset_content }}
+        </span>
       </span>
-      <span class="text-sm pr-2.5">Add to cart</span>
+      {% if product.variants.size > 1 %}
+        <span class="text-sm pr-2.5">View options</span>
+      {% else %}
+        <span class="text-sm pr-2.5">Add to cart</span>
+      {% endif %}
     </button>
   </div>
 </product-card>
