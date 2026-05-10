@@ -12,8 +12,6 @@
     --color-red-400: oklch(70.4% 0.191 22.216);
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-900: oklch(39.6% 0.141 25.723);
-    --color-orange-50: oklch(98% 0.016 73.684);
-    --color-orange-100: oklch(95.4% 0.038 75.164);
     --color-orange-300: oklch(83.7% 0.128 66.29);
     --color-orange-400: oklch(75% 0.183 55.934);
     --color-orange-500: oklch(70.5% 0.213 47.604);
@@ -258,6 +256,9 @@
   .-top-1 {
     top: calc(var(--spacing) * -1);
   }
+  .-top-px {
+    top: -1px;
+  }
   .top-0 {
     top: calc(var(--spacing) * 0);
   }
@@ -293,6 +294,9 @@
   }
   .bottom-3\! {
     bottom: calc(var(--spacing) * 3) !important;
+  }
+  .-left-px {
+    left: -1px;
   }
   .left-0 {
     left: calc(var(--spacing) * 0);
@@ -441,6 +445,9 @@
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
   }
+  .mb-3 {
+    margin-bottom: calc(var(--spacing) * 3);
+  }
   .mb-4 {
     margin-bottom: calc(var(--spacing) * 4);
   }
@@ -536,9 +543,6 @@
   }
   .h-70 {
     height: calc(var(--spacing) * 70);
-  }
-  .h-72 {
-    height: calc(var(--spacing) * 72);
   }
   .h-full {
     height: 100%;
@@ -776,6 +780,9 @@
   }
   .gap-10 {
     gap: calc(var(--spacing) * 10);
+  }
+  .gap-px {
+    gap: 1px;
   }
   .truncate {
     overflow: hidden;
@@ -1256,6 +1263,11 @@
   .in-\[\.error\]\:text-rose-900 {
     :where(*:is(.error)) & {
       color: var(--color-rose-900);
+    }
+  }
+  .in-\[\.image-viewer-open\]\:flex {
+    :where(*:is(.image-viewer-open)) & {
+      display: flex;
     }
   }
   .in-\[\.mobile-menu-open\]\:block {
@@ -2546,21 +2558,6 @@
     & .copyright-text {
       font-size: var(--text-base);
       line-height: var(--tw-leading, var(--text-base--line-height));
-    }
-  }
-  .\[\&_img\]\:h-full {
-    & img {
-      height: 100%;
-    }
-  }
-  .\[\&_img\]\:w-full {
-    & img {
-      width: 100%;
-    }
-  }
-  .\[\&_img\]\:object-contain {
-    & img {
-      object-fit: contain;
     }
   }
   .\[\&_svg\]\:size-4 {

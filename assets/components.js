@@ -630,6 +630,90 @@ class CartItem extends HTMLElement {
 
 customElements.define('cart-item', CartItem)
 
+class ImageViewerWindow extends HTMLElement {
+  constructor() {
+    super();
+    this.content = this.querySelector('main')
+    this.innerContent = this.querySelector('&>div>div')
+
+    this.nav = this.querySelector('nav')
+    this.closeButton = this.querySelector('button.close')
+
+    this.images = this.nav.querySelectorAll('img') ?? [];
+    this.navigate = this.navigate.bind(this);
+    this.close = this.close.bind(this)
+    this.open = this.open.bind(this)
+
+  }
+  connectedCallback() {
+    this.images.forEach((image, index) => {
+      image.addEventListener('click', this.navigate)
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const children = Array.from(entry.target.parentNode.children);
+          const index = children.indexOf(entry.target)
+          const navChildren = Array.from(this.images);
+          if (navChildren.length && navChildren[index]) {
+            navChildren.forEach(element => {
+              element.classList.remove('in-view')
+            });
+            navChildren[index].classList.add('in-view')
+          }
+          entry.target.classList.add('in-view');
+        }
+      });
+    });
+    this.content.querySelectorAll('img').forEach(el => observer.observe(el));
+
+    this.closeButton?.addEventListener('click', this.close)
+
+    document.addEventListener('keydown', this.close);
+    document.addEventListener(EVENTS.OPEN_IMAGE_VIEWER, (e) => {
+      this.open(e.detail.index)
+    })
+    this.addEventListener('click', this.close)
+  }
+
+  disconnectedCallback() {
+    this.images.forEach((image, index) => {
+      image.removeEventListener('click', this.navigate)
+    });
+    this.closeButton.removeEventListener('click', this.close)
+    document.removeEventListener('keydown', this.onEscape);
+  }
+
+  navigate(event) {
+    const target = event.target;
+    const navChildren = Array.from(target.parentNode.children);
+    const index = navChildren.indexOf(target)
+    const contentChildren = Array.from(this.content.children);
+    if (contentChildren.length && contentChildren[index]) {
+      contentChildren[index].scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
+  }
+  open(index) {
+    const images = Array.from(this.content.children);
+    document.documentElement.classList.add('image-viewer-open')
+    if (images.length > 0 && images[index]) {
+      images[index].scrollIntoView({})
+    }
+  }
+  close(e) {
+    if (e.target.tagName == 'IMAGE-VIEWER-WINDOW' || e.key === 'Escape') {
+      document.documentElement.classList.remove('image-viewer-open')
+    }
+
+  }
+}
+customElements.define('image-viewer-window', ImageViewerWindow)
+
 // class SplideExplore extends HTMLElement {
 //   constructor() {
 //     super();
@@ -711,90 +795,6 @@ customElements.define('cart-item', CartItem)
 // customElements.define('product-card', ProductCard)
 
 
-
-// class ImageViewerWindow extends HTMLElement {
-//   constructor() {
-//     super();
-//     this.content = this.querySelector('main')
-//     this.innerContent = this.querySelector('&>div>div')
-
-//     this.nav = this.querySelector('nav')
-//     this.closeButton = this.querySelector('button.close')
-
-//     this.images = this.nav.querySelectorAll('img') ?? [];
-//     this.navigate = this.navigate.bind(this);
-//     this.close = this.close.bind(this)
-//     this.open = this.open.bind(this)
-
-//   }
-//   connectedCallback() {
-//     this.images.forEach((image, index) => {
-//       image.addEventListener('click', this.navigate)
-//     });
-
-//     const observer = new IntersectionObserver((entries) => {
-//       entries.forEach(entry => {
-//         if (entry.isIntersecting) {
-//           const children = Array.from(entry.target.parentNode.children);
-//           const index = children.indexOf(entry.target)
-//           const navChildren = Array.from(this.images);
-//           if (navChildren.length && navChildren[index]) {
-//             navChildren.forEach(element => {
-//               element.classList.remove('in-view')
-//             });
-//             navChildren[index].classList.add('in-view')
-//           }
-//           entry.target.classList.add('in-view');
-//         }
-//       });
-//     });
-//     this.content.querySelectorAll('img').forEach(el => observer.observe(el));
-
-//     this.closeButton?.addEventListener('click', this.close)
-
-//     document.addEventListener('keydown', this.close);
-//     document.addEventListener(EVENTS.OPEN_IMAGE_VIEWER, (e) => {
-//       this.open(e.detail.index)
-//     })
-//     this.addEventListener('click', this.close)
-//   }
-
-//   disconnectedCallback() {
-//     this.images.forEach((image, index) => {
-//       image.removeEventListener('click', this.navigate)
-//     });
-//     this.closeButton.removeEventListener('click', this.close)
-//     document.removeEventListener('keydown', this.onEscape);
-//   }
-
-//   navigate(event) {
-//     const target = event.target;
-//     const navChildren = Array.from(target.parentNode.children);
-//     const index = navChildren.indexOf(target)
-//     const contentChildren = Array.from(this.content.children);
-//     if (contentChildren.length && contentChildren[index]) {
-//       contentChildren[index].scrollIntoView({
-//         behavior: 'smooth',
-//         block: 'start',
-//         inline: 'nearest'
-//       });
-//     }
-//   }
-//   open(index) {
-//     const images = Array.from(this.content.children);
-//     document.documentElement.classList.add('image-viewer-open')
-//     if (images.length > 0 && images[index]) {
-//       images[index].scrollIntoView({})
-//     }
-//   }
-//   close(e) {
-//     if (e.target.tagName == 'IMAGE-VIEWER-WINDOW' || e.key === 'Escape') {
-//       document.documentElement.classList.remove('image-viewer-open')
-//     }
-
-//   }
-// }
-// customElements.define('image-viewer-window', ImageViewerWindow)
 
 // class PriceSlider extends HTMLElement {
 //   constructor() {
