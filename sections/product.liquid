@@ -184,12 +184,28 @@
                     <div class="flex flex-col gap-2">
                       <div class="flex flex-col gap-2 mb-2 border-b border-brand-silver text-brand-gray pb-4">
                         <div class="flex justify-between">
-                          <span>$<span data-price>169.99</span> x <span data-quantity>1</span></span>
-                          <span>$<span data-total>169.99</span></span>
+                          <span
+                            ><span
+                              data-price="{{ product.selected_or_first_available_variant.price }}"
+                              data-currency="{{- cart.currency.symbol -}}"
+                            >
+                              {{- product.selected_or_first_available_variant.price | money -}}
+                            </span>
+                            x <span data-quantity>1</span></span
+                          >
+
+                          <span
+                            ><span data-total>
+                              {{- product.selected_or_first_available_variant.price | money -}}
+                            </span></span
+                          >
                         </div>
                         <div class="flex justify-between">
-                          <span>Tax estimate</span>
-                          <span>$0</span>
+                          {%- if cart.taxes_included -%}
+                            <span>Tax included.</span>
+                          {%- else -%}
+                            <span>Tax calculated at checkout.</span>
+                          {%- endif -%}
                         </div>
                       </div>
                       <div class="flex justify-between font-semibold text-brand-black">

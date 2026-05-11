@@ -215,14 +215,16 @@ class ProductForm extends HTMLElement {
     );
     // this.quantityPrice = this.querySelector("[name=\"price\"]");
     this.addToCartButton = this.querySelector('button[data-add-to-cart]')
-    this.quantities = this.querySelectorAll('span[data-quantity]')
-    // this.totals = this.querySelectorAll('span[data-total]')
+    this.quantity = this.querySelector('span[data-quantity]')
+    this.total = this.querySelector('span[data-total]')
+    this.price = this.querySelectorAll('span[data-price]')
+    this.currency = this.querySelectorAll('span[data-currency]')
     // this.productImage = this.querySelector('img[data-img]')
     this.thumbnailSlider = this.querySelector('.product-thumbnail-slider')
     this.mainSlider = this.querySelector('.product-main-slider')
     this.sliderImages = this.mainSlider.querySelectorAll('li')
     this.addToCart = this.addToCart.bind(this);
-    // this.updateInfo = this.updateInfo.bind(this);
+    this.updateInfo = this.updateInfo.bind(this);
     this.openImageViewer = this.openImageViewer.bind(this)
     // this.images = this.querySelectorAll('img')
     // this.featuredImage = this.productImage ? this.productImage.src : this.images.length ? this.images[0].src : null;
@@ -231,7 +233,7 @@ class ProductForm extends HTMLElement {
 
   connectedCallback() {
     this.addToCartButton.addEventListener("click", this.addToCart);
-    // this.quantityInput.addEventListener("change", this.updateInfo);
+    this.quantityInput.addEventListener("change", this.updateInfo);
     this.sliderImages?.forEach((sliderImage, index) => {
       sliderImage.addEventListener('click', this.openImageViewer)
     })
@@ -293,6 +295,10 @@ class ProductForm extends HTMLElement {
   }
 
   updateInfo() {
+    //     this.quantity
+    //     this.total
+    // this.price
+    // this.currency
     // this.quantities.forEach((el) => {
     //   el.innerHTML = this.quantityInput.value
     // })
