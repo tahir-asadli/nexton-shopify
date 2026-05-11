@@ -1,7 +1,10 @@
 <!-- Product -->
 <section class="mt-10" section-id="{{ section.id }}" id="main-product">
   <div class="container" id="main-product">
-    <product-form>
+    <product-form
+      data-price="{{ product.selected_or_first_available_variant.price }}"
+      data-currency="{{- cart.currency.symbol -}}"
+    >
       {% form 'product', product %}
         <fieldset>
           <input type="hidden" name="id" id="variant-id" value="{{ product.selected_or_first_available_variant.id }}">
@@ -185,17 +188,14 @@
                       <div class="flex flex-col gap-2 mb-2 border-b border-brand-silver text-brand-gray pb-4">
                         <div class="flex justify-between">
                           <span
-                            ><span
-                              data-price="{{ product.selected_or_first_available_variant.price }}"
-                              data-currency="{{- cart.currency.symbol -}}"
-                            >
+                            ><span>
                               {{- product.selected_or_first_available_variant.price | money -}}
                             </span>
                             x <span data-quantity>1</span></span
                           >
 
                           <span
-                            ><span data-total>
+                            ><span data-sub-total>
                               {{- product.selected_or_first_available_variant.price | money -}}
                             </span></span
                           >
@@ -210,7 +210,11 @@
                       </div>
                       <div class="flex justify-between font-semibold text-brand-black">
                         <span>Total</span>
-                        <span>$<span data-total>169.99</span></span>
+                        <span>
+                          <span data-total>
+                            {{- product.selected_or_first_available_variant.price | money -}}
+                          </span></span
+                        >
                       </div>
                     </div>
                   </fieldset>

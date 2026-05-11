@@ -216,9 +216,8 @@ class ProductForm extends HTMLElement {
     // this.quantityPrice = this.querySelector("[name=\"price\"]");
     this.addToCartButton = this.querySelector('button[data-add-to-cart]')
     this.quantity = this.querySelector('span[data-quantity]')
+    this.subtotal = this.querySelector('span[data-sub-total]')
     this.total = this.querySelector('span[data-total]')
-    this.price = this.querySelectorAll('span[data-price]')
-    this.currency = this.querySelectorAll('span[data-currency]')
     // this.productImage = this.querySelector('img[data-img]')
     this.thumbnailSlider = this.querySelector('.product-thumbnail-slider')
     this.mainSlider = this.querySelector('.product-main-slider')
@@ -294,7 +293,21 @@ class ProductForm extends HTMLElement {
     })
   }
 
-  updateInfo() {
+  updateInfo(e) {
+    const quantity = Number(e.target.value);
+    const price = Number(this.dataset.price);
+    const total = Math.round(quantity * price * 100) / 100 / 100;
+    this.quantity.innerHTML = quantity;
+    this.subtotal.innerHTML = `${this.dataset.currency}${total.toFixed(2)}`;
+    this.total.innerHTML = `${this.dataset.currency}${total.toFixed(2)}`;
+
+    console.log(quantity, price);
+
+    // this.price = this.dataset.price;
+    // this.currency = this.dataset.currency;
+    // const quantity = this.quantity;
+    // const quantity = this.quantity;
+    // const quantity = this.quantity;
     //     this.quantity
     //     this.total
     // this.price
