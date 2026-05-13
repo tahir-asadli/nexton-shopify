@@ -38,7 +38,8 @@
                         {{
                           image
                           | image_url: width: 1024, height: 1024, crop: 'top'
-                          | image_tag: class: 'w-full h-full object-contain lg:object-cover object-top rounded-2xl cursor-pointer'
+                          | image_tag:
+                            class: 'w-full h-full object-contain lg:object-cover object-top rounded-2xl cursor-pointer'
                         }}
                       </li>
                     {% endfor %}
@@ -48,7 +49,7 @@
             </div>
             <div class="lg:col-span-3">
               <div class="border border-brand-silver rounded-2xl p-8">
-                <h1 class="text-2xl mb-4" data-title>{{ product.title }}</h1>
+                <h1 class="text-xl md:text-2xl mb-4" data-title>{{ product.title }}</h1>
                 <div class="flex gap-2 justify-between mb-2">
                   <div class="flex gap-2">
                     <span>
@@ -61,7 +62,7 @@
                     <a href="#" class="font-medium text-brand-gray-400 underline">124 reviews</a>
                   </div>
                   <div class="flex flex-col gap-0.5">
-                    <span class="font-semibold text-2xl">
+                    <span class="font-semibold text-xl md:text-2xl">
                       {{- product.selected_or_first_available_variant.price | money -}}
                     </span>
                     {% if product.selected_or_first_available_variant.compare_at_price
