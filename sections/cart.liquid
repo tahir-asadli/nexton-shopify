@@ -22,69 +22,81 @@
   <div class="container">
     <div class="grid lg:grid-cols-12 gap-10 mb-20">
       <div class="lg:col-span-7">
-        <h2 class="h3 mb-6">Your cart</h2>
-        {% if cart.items %}
-          <div class="p-6 border border-brand-silver rounded-2xl">
-            <div class="flex flex-col gap-6">
-              {% for item in cart.items %}
-                <cart-item data-key="{{ item.key }}">
-                  <div class="flex gap-6 relative">
-                    <div class="flex w-24 h-27">
-                      {% if item.image %}
-                        {{
-                          item.image
-                          | image_url: width: 150, height: 150
-                          | image_tag: class: 'w-full h-full object-contain'
-                        }}
-                      {% endif %}
-                    </div>
-                    <div>
-                      <h3 class="font-semibold text-base">
-                        <a href="{{ item.url }}">{{- item.title }}</a>
-                      </h3>
-                      <div class="text-brand-gray text-sm">Size: M</div>
-                      <div class="mt-5">
-                        <quantity-input>
-                          <button type="button" data-minus>&minus;</button>
-                          <input type="number" value="1">
-                          <button type="button" data-plus>&plus;</button>
-                        </quantity-input>
-                      </div>
-                    </div>
-                    <button
-                      data-remove
-                      class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer"
-                    >
-                      <span class="size-4">
-                        {{ 'icons/bin.svg' | inline_asset_content }}
-                      </span>
-                    </button>
-                    <div class="flex items-center ml-auto">
-                      <div class="text-right">
-                        <div class="font-semibold">{{ item.final_price | money }}</div>
-                        {% if item.original_price != item.final_price %}
-                          {% if item.variant.compare_at_price > item.original_price %}
-                            <div class="text-sm text-brand-gray">
-                              <s>{{ item.variant.compare_at_price | money }}</s>
-                            </div>
-                          {% endif %}
-                        {% else %}
-                          {% if item.variant.compare_at_price > item.original_price %}
-                            <div class="text-sm text-brand-gray">
-                              <s>{{ item.variant.compare_at_price | money }}</s>
-                            </div>
-                          {% endif %}
+        <product-cart>
+          <h2 class="h3 mb-6">Your cart</h2>
+          {% if cart.items %}
+            <div class="p-6 border border-brand-silver rounded-2xl">
+              <div class="flex flex-col gap-6">
+                {% for item in cart.items %}
+                  <cart-item data-key="{{ item.key }}">
+                    <div class="flex gap-6 relative">
+                      <div class="flex w-24 h-27">
+                        {% if item.image %}
+                          {{
+                            item.image
+                            | image_url: width: 150, height: 150
+                            | image_tag: class: 'w-full h-full object-contain'
+                          }}
                         {% endif %}
                       </div>
+                      <div>
+                        <h3 class="font-semibold text-base">
+                          <a href="{{ item.url }}">{{- item.title }}</a>
+                        </h3>
+                        {% unless item.product.has_only_default_variant %}
+                          <div class="flex flex-col gap-1 text-sm">
+                            {% for option in item.options_with_values %}
+                              <div class="">
+                                <span>{{ option.name }}:</span>
+                                <span class="text-black/60">{{ option.value }}</span>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        {% endunless %}
+                        {% comment %} <div class="text-brand-gray text-sm">Size: M</div> {% endcomment %}
+                        <div class="mt-5">
+                          <quantity-input>
+                            <button type="button" data-minus>&minus;</button>
+                            <input type="number" value="1">
+                            <button type="button" data-plus>&plus;</button>
+                          </quantity-input>
+                        </div>
+                      </div>
+                      <button
+                        data-remove
+                        class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer"
+                      >
+                        <span class="size-4">
+                          {{ 'icons/bin.svg' | inline_asset_content }}
+                        </span>
+                      </button>
+                      <div class="flex items-center ml-auto">
+                        <div class="text-right">
+                          <div class="font-semibold">{{ item.final_price | money }}</div>
+                          {% if item.original_price != item.final_price %}
+                            {% if item.variant.compare_at_price > item.original_price %}
+                              <div class="text-sm text-brand-gray">
+                                <s>{{ item.variant.compare_at_price | money }}</s>
+                              </div>
+                            {% endif %}
+                          {% else %}
+                            {% if item.variant.compare_at_price > item.original_price %}
+                              <div class="text-sm text-brand-gray">
+                                <s>{{ item.variant.compare_at_price | money }}</s>
+                              </div>
+                            {% endif %}
+                          {% endif %}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </cart-item>
-              {% endfor %}
+                  </cart-item>
+                {% endfor %}
+              </div>
             </div>
-          </div>
-        {% else %}
-          <div class="py-6 text-center text-brand-gray">Cart is empty</div>
-        {% endif %}
+          {% else %}
+            <div class="py-6 text-center text-brand-gray">Cart is empty</div>
+          {% endif %}
+        </product-cart>
       </div>
       <div class="lg:col-span-5">
         <h2 class="h3 mb-6">Order summary</h2>
