@@ -823,6 +823,95 @@ class CartItem extends HTMLElement {
 
 customElements.define('cart-item', CartItem)
 
+class ProductCart extends HTMLElement {
+  constructor() {
+    super();
+
+    this.form = this.querySelector('form');
+    this.formFieldset = this.form.querySelector('fieldset');
+    this.updateButton = this.form.querySelector('[data-update-button]');
+    this.updateCart = this.updateCart.bind(this);
+    this.sectionId = this.dataset.sectionId;
+    this.quantityInputs = this.querySelectorAll("[data-quantity-input]");
+    this.sectionId = this.dataset.sectionId;
+    this.updateCartSection = this.updateCartSection.bind(this);
+    console.log('this.updateButton', this.updateButton);
+
+  }
+
+  connectedCallback() {
+
+    this.updateButton.addEventListener('click', this.updateCart, true)
+  }
+
+
+  disconnectedCallback() {
+    this.updateButton.removeEventListener('click', this.updateCart)
+  }
+
+  updateCart(event) {
+    console.log('updateCart(event) ');
+
+    event.preventDefault();
+    const formData = new FormData(this.form);
+    this.formFieldset.disabled = true;
+    fetch('/cart/update.js', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(data => {
+            throw new Error(data.description || 'Could not update cart');
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        this.updateCartSection();
+      })
+      .catch(err => {
+        console.error('Error updating cart:', err);
+        this.formFieldset.disabled = false;
+      });
+  }
+  updateCartSection() {
+    const url = `${window.location.origin}/cart?section_id=${this.sectionId}`;
+    fetch(url)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch cart section');
+        }
+        return res.text();
+      })
+      .then(html => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const newSection = tempDiv.querySelector(`#shopify-section-${this.sectionId}`);
+        const currentSection = document.querySelector(`#shopify-section-${this.sectionId}`);
+        if (newSection && currentSection) {
+          currentSection.replaceWith(newSection);
+          document.dispatchEvent(new CustomEvent('show-notification', {
+            detail: {
+              type: 'success',
+              message: 'Cart updated!',
+            }, bubbles: true
+          }));
+
+          document.dispatchEvent(new CustomEvent('update-cart-button', { bubbles: true }));
+        }
+        this.formFieldset.disabled = false;
+      })
+      .catch(err => {
+        console.error('Error fetching cart section:', err);
+        this.formFieldset.disabled = false;
+      });
+  }
+}
+
+customElements.define('product-cart', ProductCart)
+
+
 class ImageViewerWindow extends HTMLElement {
   constructor() {
     super();

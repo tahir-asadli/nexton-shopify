@@ -22,76 +22,89 @@
   <div class="container">
     <div class="grid lg:grid-cols-12 gap-10 mb-20">
       <div class="lg:col-span-7">
-        <product-cart>
+        <product-cart data-section-id="{{ section.id }}">
           {% if cart.items %}
-            <div class="p-6 border border-brand-silver rounded-2xl">
-              <div class="flex flex-col gap-6">
-                {% for item in cart.items %}
-                  <cart-item data-key="{{ item.key }}">
-                    <div class="flex gap-6 relative">
-                      <div class="flex w-24 h-27">
-                        {% if item.image %}
-                          {{
-                            item.image
-                            | image_url: width: 150, height: 150
-                            | image_tag: class: 'w-full h-full object-contain'
-                          }}
-                        {% endif %}
-                      </div>
-                      <div class="w-full">
-                        <h3 class="font-semibold text-base pr-8">
-                          <a href="{{ item.url }}">{{- item.title }}</a>
-                        </h3>
-                        {% unless item.product.has_only_default_variant %}
-                          <div class="flex flex-col gap-1 text-sm">
-                            {% for option in item.options_with_values %}
-                              <div class="">
-                                <span>{{ option.name }}:</span>
-                                <span class="text-black/60">{{ option.value }}</span>
-                              </div>
-                            {% endfor %}
-                          </div>
-                        {% endunless %}
-                        <div class="flex justify-between items-center gap-2 mt-5">
-                          <quantity-input>
-                            <button type="button" data-minus>&minus;</button>
-                            <input type="number" value="{{ item.quantity }}">
-                            <button type="button" data-plus>&plus;</button>
-                          </quantity-input>
-                          <div class="text-right">
-                            <div class="font-semibold">{{ item.final_price | money }}</div>
-                            {% if item.original_price != item.final_price %}
-                              {% if item.variant.compare_at_price > item.original_price %}
-                                <div class="text-sm text-brand-gray">
-                                  <s>{{ item.variant.compare_at_price | money }}</s>
-                                </div>
-                              {% endif %}
-                            {% else %}
-                              {% if item.variant.compare_at_price > item.original_price %}
-                                <div class="text-sm text-brand-gray">
-                                  <s>{{ item.variant.compare_at_price | money }}</s>
-                                </div>
-                              {% endif %}
+            {% form 'cart', cart %}
+              <fieldset>
+                <div class="p-6 border border-brand-silver rounded-2xl">
+                  <div class="flex flex-col gap-6">
+                    {% for item in cart.items %}
+                      <cart-item data-key="{{ item.key }}">
+                        <div class="flex gap-6 relative">
+                          <div class="flex w-24 h-27">
+                            {% if item.image %}
+                              {{
+                                item.image
+                                | image_url: width: 150, height: 150
+                                | image_tag: class: 'w-full h-full object-contain'
+                              }}
                             {% endif %}
                           </div>
+                          <div class="w-full">
+                            <h3 class="font-semibold text-base pr-8">
+                              <a href="{{ item.url }}">{{- item.title }}</a>
+                            </h3>
+                            {% unless item.product.has_only_default_variant %}
+                              <div class="flex flex-col gap-1 text-sm">
+                                {% for option in item.options_with_values %}
+                                  <div class="">
+                                    <span>{{ option.name }}:</span>
+                                    <span class="text-black/60">{{ option.value }}</span>
+                                  </div>
+                                {% endfor %}
+                              </div>
+                            {% endunless %}
+                            <div class="flex justify-between items-center gap-2 mt-5">
+                              <quantity-input>
+                                <button type="button" data-minus>&minus;</button>
+                                <input
+                                  data-quantity-input
+                                  type="number"
+                                  name="updates[]"
+                                  min="{{ item.variant.quantity_rule.min }}"
+                                  {% if item.variant.quantity_rule.max %}
+                                    max="{{ item.variant.quantity_rule.max }}"
+                                  {% endif %}
+                                  value="{{ item.quantity }}"
+                                >
+                                <button type="button" data-plus>&plus;</button>
+                              </quantity-input>
+                              <div class="text-right">
+                                <div class="font-semibold">{{ item.final_price | money }}</div>
+                                {% if item.original_price != item.final_price %}
+                                  {% if item.variant.compare_at_price > item.original_price %}
+                                    <div class="text-sm text-brand-gray">
+                                      <s>{{ item.variant.compare_at_price | money }}</s>
+                                    </div>
+                                  {% endif %}
+                                {% else %}
+                                  {% if item.variant.compare_at_price > item.original_price %}
+                                    <div class="text-sm text-brand-gray">
+                                      <s>{{ item.variant.compare_at_price | money }}</s>
+                                    </div>
+                                  {% endif %}
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            data-remove
+                            class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer"
+                          >
+                            <span class="size-4">
+                              {{ 'icons/bin.svg' | inline_asset_content }}
+                            </span>
+                          </button>
                         </div>
-                      </div>
-                      <button
-                        data-remove
-                        class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer"
-                      >
-                        <span class="size-4">
-                          {{ 'icons/bin.svg' | inline_asset_content }}
-                        </span>
-                      </button>
-                    </div>
-                  </cart-item>
-                {% endfor %}
-              </div>
-            </div>
-            <div class="flex justify-end my-4">
-              <button class="button">Update cart</button>
-            </div>
+                      </cart-item>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="flex justify-end my-4">
+                  <button class="button" data-update-button>Update cart</button>
+                </div>
+              </fieldset>
+            {% endform %}
           {% else %}
             <div class="py-6 text-center text-brand-gray">Cart is empty</div>
           {% endif %}
