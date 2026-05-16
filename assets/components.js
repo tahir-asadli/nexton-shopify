@@ -9,6 +9,7 @@ const EVENTS = {
   HIDE_NOTIFICATION: 'hide-notification',
   OPEN_PRODUCT_DIALOG: 'open-product-dialog',
   CLOSE_PRODUCT_DIALOG: 'close-product-dialog',
+  UPDATE_CART_BUTTON: 'update-cart-button',
 }
 
 class Announcement extends HTMLElement {
@@ -300,31 +301,12 @@ class ProductForm extends HTMLElement {
     this.quantity.innerHTML = quantity;
     this.subtotal.innerHTML = `${this.dataset.currency}${total.toFixed(2)}`;
     this.total.innerHTML = `${this.dataset.currency}${total.toFixed(2)}`;
-
-    console.log(quantity, price);
-
-    // this.price = this.dataset.price;
-    // this.currency = this.dataset.currency;
-    // const quantity = this.quantity;
-    // const quantity = this.quantity;
-    // const quantity = this.quantity;
-    //     this.quantity
-    //     this.total
-    // this.price
-    // this.currency
-    // this.quantities.forEach((el) => {
-    //   el.innerHTML = this.quantityInput.value
-    // })
-    // this.totals.forEach((el) => {
-    //   // el.innerHTML = Math.round(this.quantityInput.value * this.quantityPrice.value * 100) / 100
-    //   e.innerHTML = 'Todo: Update this';
-    // })
   }
 
   addToCart(e) {
     e.preventDefault();
     this.fieldset.disabled = true;
-    const url = '/cart/add.js';
+    const url = `${window.Shopify.routes.root}cart/add.js`;
     const formData = {
       items: [{
         quantity: this.quantityInput.value,
@@ -429,7 +411,7 @@ class ProductCard extends HTMLElement {
       }));
 
     } else {
-      const url = '/cart/add.js';
+      const url = `${window.Shopify.routes.root}cart/add.js`;
       this.button.classList.add('adding')
       const formData = {
         items: [{
@@ -531,7 +513,7 @@ class ProductDialog extends HTMLElement {
   }
 
   loadProduct(productHandle) {
-    const url = `/products/${productHandle}`;
+    const url = `${window.Shopify.routes.root}products/${productHandle}`;
     fetch(url)
       .then(res => {
         if (!res.ok) {
@@ -564,9 +546,6 @@ class ProductDialog extends HTMLElement {
 }
 
 customElements.define('product-dialog', ProductDialog)
-
-
-
 
 class QuantityInput extends HTMLElement {
   constructor() {
@@ -657,37 +636,6 @@ class CartDrawer extends HTMLElement {
   openDrawer(event) {
 
     document.documentElement.classList.add('cart-drawer-open');
-    // const items = cart.items();
-    // if (items.length) {
-    //   this.drawerItems.innerHTML = ''
-    //   items.map((item, index) => {
-    //     this.drawerItems.innerHTML += `<cart-item data-index="${index}">
-    //     <div class="flex gap-3 relative py-2">
-    //               <div class="flex w-20 h-20 shrink-0">
-    //                 <img class="w-full h-full object-contain" src="${item.image}" alt="">
-    //               </div>
-    //               <div class="flex flex-col justify-between">
-    //                 <h3 class="font-normal text-sm">${item.title}</h3>
-    //                <div>
-    //                   <div class="font-semibold">$${item.price}</div>
-    //                   <div class="text-sm text-brand-gray"><s>$${item.price}</s></div>
-    //                 </div>
-    //               </div>
-    //               <button data-remove class="absolute top-2 right-0 size-6 rounded-full flex justify-center items-center cursor-pointer">
-    //                 <svg class="size-4" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-    //                   <path d="M216,50H174V40a22,22,0,0,0-22-22H104A22,22,0,0,0,82,40V50H40a6,6,0,0,0,0,12H50V208a14,14,0,0,0,14,14H192a14,14,0,0,0,14-14V62h10a6,6,0,0,0,0-12ZM94,40a10,10,0,0,1,10-10h48a10,10,0,0,1,10,10V50H94ZM194,208a2,2,0,0,1-2,2H64a2,2,0,0,1-2-2V62H194ZM110,104v64a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Zm48,0v64a6,6,0,0,1-12,0V104a6,6,0,0,1,12,0Z"></path>
-    //                 </svg>
-    //               </button>
-    //               <div class="flex items-center ml-auto">
-
-    //               </div>
-    //             </div>
-    //             </cart-item>`;
-
-    //   })
-    // } else {
-    //   this.drawerItems.innerHTML = `<div class="py-6 text-center text-brand-gray">Cart is empty</div>`;
-    // }
     const contentHeight = this.drawerContainerInner.scrollHeight;
 
     this.drawerContainer.style.height = (contentHeight) + 'px';
@@ -707,30 +655,41 @@ customElements.define('cart-drawer', CartDrawer)
 class CartButton extends HTMLElement {
   constructor() {
     super();
-    this.cartCount = this.querySelector('[data-cart-count]');
     this.cartButton = this.querySelector('[data-button]');
+    this.cartCount = this.cartButton.querySelector('[data-cart-count]');
 
-    this.updateCart = this.updateCart.bind(this);
+    this.updateCartCount = this.updateCartCount.bind(this);
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
 
   connectedCallback() {
-    this.updateCart(this, true)
-    document.addEventListener(EVENTS.CART_UPDATED, this.updateCart)
+    this.updateCartCount(this, true)
+    document.addEventListener(EVENTS.CART_UPDATED, this.updateCartCount)
+
     this.cartButton.addEventListener('click', this.toggleDrawer)
   }
 
   disconnectedCallback() {
-    document.removeEventListener(EVENTS.CART_UPDATED, this.updateCart);
+    document.removeEventListener(EVENTS.CART_UPDATED, this.updateCartCount);
     this.cartButton.removeEventListener('click', this.toggleDrawer);
   }
 
-  updateCart(event, initial = false) {
+  updateCartCount(event, initial = false) {
+    console.log('updateCartCount');
 
+    fetch(`${window.Shopify.routes.root}cart.js`)
+      .then(response => response.json())
+      .then(cart => {
+        console.log('cart.item_count', cart.item_count);
+
+        this.cartCount.textContent = cart.item_count;
+      })
+      .catch(error => {
+        console.error('Error fetching cart:', error);
+      });
     // this.cartCount.textContent = cart.count ? cart.count : '';
     if (initial !== true) {
-      this.cartCount.classList.add('animate-cart');
-      this.cartCount.classList.remove('animate-cart');
+      if (!this.cartButton) return;
       document.dispatchEvent(new CustomEvent(EVENTS.OPEN_CART_DRAWER, {
         bubbles: true
       }));
@@ -766,7 +725,7 @@ class CartItem extends HTMLElement {
   }
 
   removeItem() {
-    const url = '/cart/change.js';
+    const url = `${window.Shopify.routes.root}cart/change.js`;
     const formData = {
       quantity: 0,
       id: this.itemKey,
@@ -850,12 +809,11 @@ class ProductCart extends HTMLElement {
   }
 
   updateCart(event) {
-    console.log('updateCart(event) ');
-
     event.preventDefault();
     const formData = new FormData(this.form);
+    formData.append('sections', 'cart-drawer')
     this.formFieldset.disabled = true;
-    fetch('/cart/update.js', {
+    fetch(`${window.Shopify.routes.root}cart/update.js`, {
       method: 'POST',
       body: formData,
     })
@@ -868,6 +826,12 @@ class ProductCart extends HTMLElement {
         return res.json();
       })
       .then(data => {
+        if (data?.sections["cart-drawer"]) {
+          const cartDrawer = document.querySelector('cart-drawer');
+          if (cartDrawer) {
+            cartDrawer.parentNode.innerHTML = data?.sections["cart-drawer"];
+          }
+        }
         this.updateCartSection();
       })
       .catch(err => {
@@ -876,7 +840,7 @@ class ProductCart extends HTMLElement {
       });
   }
   updateCartSection() {
-    const url = `${window.location.origin}/cart?section_id=${this.sectionId}`;
+    const url = `${window.Shopify.routes.root}cart?section_id=${this.sectionId}`;
     fetch(url)
       .then(res => {
         if (!res.ok) {
@@ -891,14 +855,17 @@ class ProductCart extends HTMLElement {
         const currentSection = document.querySelector(`#shopify-section-${this.sectionId}`);
         if (newSection && currentSection) {
           currentSection.replaceWith(newSection);
-          document.dispatchEvent(new CustomEvent('show-notification', {
+
+          document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
             detail: {
               type: 'success',
               message: 'Cart updated!',
             }, bubbles: true
           }));
 
-          document.dispatchEvent(new CustomEvent('update-cart-button', { bubbles: true }));
+          document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
+            bubbles: true
+          }));
         }
         this.formFieldset.disabled = false;
       })

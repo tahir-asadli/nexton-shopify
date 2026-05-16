@@ -51,7 +51,11 @@
             <span
               data-cart-count
               class="absolute -top-1 -right-1 bg-brand-blue size-5 flex justify-center items-center text-white rounded-full font-semibold empty:hidden text-xs"
-            ></span>
+            >
+              {%- if cart.item_count != 0 -%}
+                {{- cart.item_count -}}
+              {%- endif -%}
+            </span>
           </button>
         </cart-button>
       </div>
