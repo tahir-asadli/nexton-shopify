@@ -12,9 +12,19 @@
     "main": {
       "type": "product",
       "settings": {}
+    },
+    "best_sellers_KhnbRE": {
+      "type": "best-sellers",
+      "name": "Collection grid",
+      "settings": {
+        "title": "Klok",
+        "subtitle": "",
+        "collection": "klokers"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "best_sellers_KhnbRE"
   ]
 }
