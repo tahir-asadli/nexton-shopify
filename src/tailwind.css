@@ -231,11 +231,10 @@
   }
 
   .radio-button.image label {
-    @apply w-10 h-20 rounded-md bg-cover bg-top bg-no-repeat bg-transparent;
-    background-size: 100%;
+    @apply w-10 h-20 rounded-md bg-cover bg-top bg-no-repeat bg-transparent border-2 border-brand-silver;
   }
   .radio-button.image input:checked + label {
-    @apply bg-transparent border-brand-blue;
+    @apply border-brand-blue;
   }
 
   /* .variants-color .radio-button input + label::before {
