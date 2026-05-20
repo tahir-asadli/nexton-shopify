@@ -206,8 +206,10 @@ class ProductForm extends HTMLElement {
   constructor() {
     super();
     this.form = this.querySelector('form');
-    this.fieldset = this.querySelector('fieldset');
-
+    this.fieldset = this.form.querySelector('fieldset');
+    this.variantInputs = this.fieldset.querySelectorAll('[data-variant-input]')
+    this.productHandle = this.dataset.productHandle;
+    this.sectionId = this.dataset.sectionId;
     this.quantityInput = this.form.querySelector(
       "input[name='quantity']"
     );
@@ -226,6 +228,7 @@ class ProductForm extends HTMLElement {
     this.addToCart = this.addToCart.bind(this);
     this.updateInfo = this.updateInfo.bind(this);
     this.openImageViewer = this.openImageViewer.bind(this)
+    this.changeVariant = this.changeVariant.bind(this);
     // this.images = this.querySelectorAll('img')
     // this.featuredImage = this.productImage ? this.productImage.src : this.images.length ? this.images[0].src : null;
 
@@ -234,6 +237,9 @@ class ProductForm extends HTMLElement {
   connectedCallback() {
     this.addToCartButton.addEventListener("click", this.addToCart);
     this.quantityInput.addEventListener("change", this.updateInfo);
+    this.variantInputs?.forEach((variantInput) => {
+      variantInput.addEventListener('change', this.changeVariant)
+    });
     this.sliderImages?.forEach((sliderImage, index) => {
       sliderImage.addEventListener('click', this.openImageViewer)
     })
@@ -289,9 +295,39 @@ class ProductForm extends HTMLElement {
   disconnectedCallback() {
     this.addToCartButton.removeEventListener("click", this.addToCart);
     this.quantityInput.removeEventListener("change", this.updateInfo);
+    this.variantInputs?.forEach((variantInput) => {
+      variantInput.removeEventListener('change', this.changeVariant)
+    });
+
     this.sliderImages?.forEach((sliderImage) => {
       sliderImage.removeEventListener('click', this.openImageViewer)
     })
+  }
+
+  changeVariant(e) {
+    const variantId = e.target.value;
+    const url = `${window.Shopify.routes.root}products/${this.productHandle}?variant=${variantId}&section_id=${this.sectionId}`;
+    console.log('url', url);
+    this.fieldset.disabled = true;
+    fetch(url)
+      .then(res => res.text())
+      .then(html => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        const newSection = tempDiv.querySelector(`[section-id="${this.sectionId}"]`);
+        const currentSection = document.querySelector(`[section-id="${this.sectionId}"]`);
+        if (newSection && currentSection) {
+          currentSection.replaceWith(newSection);
+        }
+        const newURL = new URL(url, window.location.origin);
+        newURL.searchParams.delete('section_id');
+        window.history.replaceState({}, '', newURL);
+      })
+      .catch(err => console.error('Error fetching variant data:', err)).finally(() => {
+        this.fieldset.disabled = false;
+      });
+
   }
 
   updateInfo(e) {

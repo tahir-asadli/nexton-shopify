@@ -930,12 +930,6 @@
   .bg-yellow-900 {
     background-color: var(--color-yellow-900);
   }
-  .bg-top {
-    background-position: top;
-  }
-  .bg-no-repeat {
-    background-repeat: no-repeat;
-  }
   .object-contain {
     object-fit: contain;
   }
@@ -3061,15 +3055,16 @@
     height: calc(var(--spacing) * 20);
     width: calc(var(--spacing) * 10);
     border-radius: var(--radius-md);
+    border-style: var(--tw-border-style);
+    border-width: 2px;
+    border-color: var(--color-brand-silver);
     background-color: transparent;
     background-size: cover;
     background-position: top;
     background-repeat: no-repeat;
-    background-size: 100%;
   }
   .radio-button.image input:checked + label {
     border-color: var(--color-brand-blue);
-    background-color: transparent;
   }
   quantity-input {
     display: inline-flex;
