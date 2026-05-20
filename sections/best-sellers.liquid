@@ -3,7 +3,7 @@
   <div class="container">
     <div class="mb-10">
       <h2>
-        {% if section.settings.collection %}
+        {% if section.settings.collection != blank %}
           <a href="{{ section.settings.collection.url }}" class="underline">{{ section.settings.title }}</a>
         {% endif %}
         {% if section.settings.subtitle %}
@@ -11,13 +11,15 @@
         {% endif %}
       </h2>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
-      {% paginate section.settings.collection.products by 20 %}
-        {% for product in section.settings.collection.products %}
-          {% render 'product-card', product: product %}
-        {% endfor %}
-      {% endpaginate %}
-    </div>
+    {% if section.settings.collection != blank %}
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
+        {% paginate section.settings.collection.products by 20 %}
+          {% for product in section.settings.collection.products %}
+            {% render 'product-card', product: product %}
+          {% endfor %}
+        {% endpaginate %}
+      </div>
+    {% endif %}
   </div>
 </section>
 {% schema %}

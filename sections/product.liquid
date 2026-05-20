@@ -1,6 +1,6 @@
 <!-- Product -->
-<section class="mt-10" section-id="{{ section.id }}" id="main-product">
-  <div class="container" id="main-product">
+<section class="mt-10" section-id="{{ section.id }}" data-main-product>
+  <div class="container">
     <product-form
       data-section-id="{{ section.id }}"
       data-price="{{ product.selected_or_first_available_variant.price }}"
@@ -92,7 +92,7 @@
                 <div>
                   <fieldset>
                     <input
-                      type="text"
+                      type="hidden"
                       name="id"
                       id="variant-id"
                       value="{{ product.selected_or_first_available_variant.id }}"
