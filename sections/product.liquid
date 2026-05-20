@@ -88,105 +88,43 @@
                   </div>
                 </div>
                 <div>
-                  <div>
-                    {% assign color_option_index = null %}
-                    {% for option in product.options %}
-                      {% if option == 'Color' %}
-                        {% assign color_option_index = forloop.index0 %}
-                      {% endif %}
-                    {% endfor %}
-                    <div>color_option_index:{{ color_option_index }}</div>
-                    {% if color_option_index != null %}
-                      <div class="color-image-swatches">
-                        {% for variant in product.variants %}
-                          {% if variant.featured_image %}
-                            {%- assign option_val = variant.options[color_option_index] -%}
-                            <label class="swatch-label">
-                              <input
-                                type="radio"
-                                name="color-swatch"
-                                value="{{ variant.id }}"
-                                data-variant-id="{{ variant.id }}"
-                                data-option="{{ option_val }}"
-                              >
-                              <img
-                                width="72"
-                                height="80"
-                                src="{{ variant.featured_image | image_url: '100x100' }}"
-                                alt="{{ option_val }}"
-                                title="{{ option_val }}"
-                              >
-                            </label>
-                          {% endif %}
-                        {% endfor %}
-                      </div>
-                    {% endif %}
-                  </div>
                   <fieldset>
                     {% unless product.has_only_default_variant %}
                       {% for option in product.options_with_values %}
                         <div class="mb-2">
                           <div class="font-semibold mb-2">{{ option.name }}</div>
                           <div class="flex flex-wrap gap-2">
-                            {% if color_option_index != null %}
-                              {% for variant in product.variants %}
-                                {%- assign option_val = variant.options[color_option_index] -%}
-                                <div class="radio-button image">
-                                  <input
-                                    id="color-{{ variant.id }}"
-                                    type="radio"
-                                    name="color"
-                                    {% unless product.selected_or_first_available_variant.available %}
-                                      disabled
-                                    {% endunless %}
-                                    {%- if product.selected_or_first_available_variant.id == variant.id -%}
-                                      checked
-                                    {%- endif -%}
-                                  >
-                                  <label
-                                    class="bg-no-repeat bg-top"
-                                    style="
-                                      {%- if variant.featured_image -%}
-                                        background-image: url({{ variant.featured_image| image_url: width: 100 }})
-                                        {%- else -%}
-                                        background-color: {{ option_val.swatch.color }}
-                                      {%- endif -%}
-                                    "
-                                    for="color-{{ variant.id }}"
-                                  ></label>
-                                </div>
-                              {% endfor %}
-                            {% endif %}
                             {% for value in option.values %}
                               {% if option.name == 'Color' %}
-                                {% comment %}
-                                  <div class="radio-button image">
-                                    <input
-                                      type="radio"
-                                      value="{{ value.variant.id }}"
-                                      {% if option.selected_value == value %}
-                                        checked
-                                      {% endif %}
-                                      {% unless value.variant.available %}
-                                        disabled
-                                      {% endunless %}
-                                      name="{{ option.name | handleize }}"
-                                      id="{{ option.name | handleize }}-{{ value | handleize }}"
-                                    >
-                                    <label
-                                      for="{{ option.name | handleize }}-{{ value | handleize }}"
-                                      style="
-                                        {%- if value.swatch.image -%}
-                                          background-image: url({{ value.swatch.image| image_url: width: 50 }})
-                                        {%- else -%}
-                                        background-color: {{ value.swatch.color }}
-                                        {%- endif -%}
-                                      "
-                                      class="bg-no-repeat bg-top"
-                                      title="{{ value }}"
-                                    ></label>
-                                  </div>
-                                {% endcomment %}
+                                <div class="radio-button image">
+                                  <input
+                                    type="radio"
+                                    value="{{ value.variant.id }}"
+                                    {% if option.selected_value == value %}
+                                      checked
+                                    {% endif %}
+                                    {% unless value.variant.available %}
+                                      disabled
+                                    {% endunless %}
+                                    name="{{ option.name | handleize }}"
+                                    id="{{ option.name | handleize }}-{{ value | handleize }}"
+                                  >
+                                  <label
+                                    for="{{ option.name | handleize }}-{{ value | handleize }}"
+                                    style="
+                                      {%- if value.swatch.image -%}
+                                        background-image: url({{ value.swatch.image| image_url: width: 50 }})
+                                      {%- else -%}
+                                      background-color: {{ value.swatch.color }};
+                                      {%- if value == 'Yellow' -%}
+                                      background-image: url({{ product.metafields.custom.yellow_color_image | image_url: width: 200, height: 300 }})
+                                      {%- endif -%}
+                                      {%- endif -%}
+                                    "
+                                    class="bg-no-repeat bg-top"
+                                    title="{{ value }}"
+                                  ></label>
+                                </div>
                               {% else %}
                                 <div class="radio-button">
                                   <input
