@@ -1,4 +1,9 @@
 <!-- Product -->
+{%- assign min = 1 -%}
+{%- assign max = 100 -%}
+{%- assign diff = max | minus: min -%}
+{%- assign randomNumber = 'now' | date: '%N' | modulo: diff | plus: min -%}
+
 <section class="mt-10" section-id="{{ section.id }}" data-main-product>
   <div class="container">
     <product-form
@@ -116,10 +121,10 @@
                                       disabled
                                     {% endunless %}
                                     name="{{ option.name | handleize }}"
-                                    id="{{ option.name | handleize }}-{{ value | handleize }}"
+                                    id="{{ randomNumber }}-{{ option.name | handleize }}-{{ value | handleize }}"
                                   >
                                   <label
-                                    for="{{ option.name | handleize }}-{{ value | handleize }}"
+                                    for="{{ randomNumber }}-{{ option.name | handleize }}-{{ value | handleize }}"
                                     style="
                                       {%- if value.swatch.image -%}
                                         background-image: url({{ value.swatch.image| image_url: width: 50 }})
@@ -146,10 +151,10 @@
                                       disabled
                                     {% endunless %}
                                     name="{{ option.name | handleize }}"
-                                    id="{{ option.name | handleize }}-{{ value | handleize }}"
+                                    id="{{ randomNumber }}-{{ option.name | handleize }}-{{ value | handleize }}"
                                   >
 
-                                  <label for="{{ option.name | handleize }}-{{ value | handleize }}">
+                                  <label for="{{ randomNumber }}-{{ option.name | handleize }}-{{ value | handleize }}">
                                     {{- value -}}
                                   </label>
                                 </div>

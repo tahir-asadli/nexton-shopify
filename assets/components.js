@@ -321,14 +321,7 @@ class ProductForm extends HTMLElement {
       .then(html => {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
-
         const newSection = tempDiv.querySelector(`[section-id="${this.sectionId}"]`);
-        // console.log('newSection', newSection.innerHTML);
-        // const currentSection = this.querySelector(`[section-id="${this.sectionId}"]`);
-
-        console.log(currentSection, newSection);
-        // currentSection.remove();
-
         if (newSection && currentSection) {
           currentSection.replaceWith(newSection);
         }
