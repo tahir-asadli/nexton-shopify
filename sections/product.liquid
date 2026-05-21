@@ -2,8 +2,7 @@
 {%- assign min = 1 -%}
 {%- assign max = 100 -%}
 {%- assign diff = max | minus: min -%}
-{%- assign randomNumber = 'now' | date: '%N' | modulo: diff | plus: min -%}
-
+{%- assign random_number = 'now' | date: '%N' | modulo: diff | plus: min -%}
 <section class="mt-10" section-id="{{ section.id }}" data-main-product>
   <div class="container">
     <product-form
@@ -20,20 +19,37 @@
               <div class="product-thumbnail-slider splide h-60 sm:h-80 md:h-100 lg:h-160">
                 <div class="splide__track h-full!">
                   <ul class="splide__list flex! flex-col!">
-                    {% for image in product.images %}
-                      <li class="splide__slide inline-block w-full rounded-2xl overflow-hidden border! p-0.5 border-transparent [&.is-active]:border-brand-blue!">
-                        <span
-                          data-large="{{  image|image_url: width: 1024, height: 1024}}"
-                          class=""
-                        >
-                          {{
-                            image
-                            | image_url: width: 1024, height: 1024, crop: 'top'
-                            | image_tag: class: 'w-full h-full object-cover rounded-2xl'
-                          }}
-                        </span>
-                      </li>
-                    {% endfor %}
+                    {% if product.selected_or_first_available_variant.metafields.custom.variant_images.value.size > 0 %}
+                      {% for image in product.selected_or_first_available_variant.metafields.custom.variant_images.value %}
+                        <li class="splide__slide inline-block w-full rounded-2xl overflow-hidden border! p-0.5 border-transparent [&.is-active]:border-brand-blue!">
+                          <span
+                            data-large="{{  image|image_url: width: 1024, height: 1024}}"
+                            class=""
+                          >
+                            {{
+                              image
+                              | image_url: width: 1024, height: 1024, crop: 'top'
+                              | image_tag: class: 'w-full h-full object-cover rounded-2xl'
+                            }}
+                          </span>
+                        </li>
+                      {% endfor %}
+                    {% else %}
+                      {% for image in product.images %}
+                        <li class="splide__slide inline-block w-full rounded-2xl overflow-hidden border! p-0.5 border-transparent [&.is-active]:border-brand-blue!">
+                          <span
+                            data-large="{{  image|image_url: width: 1024, height: 1024}}"
+                            class=""
+                          >
+                            {{
+                              image
+                              | image_url: width: 1024, height: 1024, crop: 'top'
+                              | image_tag: class: 'w-full h-full object-cover rounded-2xl'
+                            }}
+                          </span>
+                        </li>
+                      {% endfor %}
+                    {% endif %}
                   </ul>
                 </div>
               </div>
@@ -121,10 +137,10 @@
                                       disabled
                                     {% endunless %}
                                     name="{{ option.name | handleize }}"
-                                    id="{{ randomNumber }}-{{ option.name | handleize }}-{{ value | handleize }}"
+                                    id="{{ random_number }}-{{ option.name | handleize }}-{{ value | handleize }}"
                                   >
                                   <label
-                                    for="{{ randomNumber }}-{{ option.name | handleize }}-{{ value | handleize }}"
+                                    for="{{ random_number }}-{{ option.name | handleize }}-{{ value | handleize }}"
                                     style="
                                       {%- if value.swatch.image -%}
                                         background-image: url({{ value.swatch.image| image_url: width: 50 }})
@@ -151,10 +167,10 @@
                                       disabled
                                     {% endunless %}
                                     name="{{ option.name | handleize }}"
-                                    id="{{ randomNumber }}-{{ option.name | handleize }}-{{ value | handleize }}"
+                                    id="{{ random_number }}-{{ option.name | handleize }}-{{ value | handleize }}"
                                   >
 
-                                  <label for="{{ randomNumber }}-{{ option.name | handleize }}-{{ value | handleize }}">
+                                  <label for="{{ random_number }}-{{ option.name | handleize }}-{{ value | handleize }}">
                                     {{- value -}}
                                   </label>
                                 </div>

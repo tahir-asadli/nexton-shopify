@@ -13,11 +13,7 @@
       "type": "hero",
       "name": "Hero",
       "settings": {
-        "collections": [
-          "automated-collection",
-          "frontpage",
-          "hydrogen"
-        ]
+        "collections": ["automated-collection", "frontpage", "hydrogen"]
       }
     },
     "brand_infos_EnFhEC": {
@@ -64,12 +60,7 @@
           "blocks": {}
         }
       },
-      "block_order": [
-        "brand_info_kP64Dw",
-        "brand_info_CKHQPC",
-        "brand_info_gVcYpC",
-        "brand_info_6Ee9UF"
-      ],
+      "block_order": ["brand_info_kP64Dw", "brand_info_CKHQPC", "brand_info_gVcYpC", "brand_info_6Ee9UF"],
       "name": "Brand infos",
       "settings": {}
     },
@@ -90,14 +81,12 @@
           "blocks": {}
         }
       },
-      "block_order": [
-        "banner_content_eT7xTj"
-      ],
+      "block_order": ["banner_content_eT7xTj"],
       "name": "Banner",
       "settings": {}
     },
     "best_sellers_4h3XiB": {
-      "type": "best-sellers",
+      "type": "collection-grid",
       "name": "Collection grid",
       "settings": {
         "title": "Best Sellers.",
@@ -106,10 +95,5 @@
       }
     }
   },
-  "order": [
-    "hero_ge9x4K",
-    "brand_infos_EnFhEC",
-    "banner_qaNNPK",
-    "best_sellers_4h3XiB"
-  ]
+  "order": ["hero_ge9x4K", "brand_infos_EnFhEC", "banner_qaNNPK", "best_sellers_4h3XiB"]
 }

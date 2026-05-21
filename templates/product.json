@@ -14,7 +14,7 @@
       "settings": {}
     },
     "best_sellers_KhnbRE": {
-      "type": "best-sellers",
+      "type": "collection-grid",
       "name": "Collection grid",
       "settings": {
         "title": "Klok",
@@ -23,8 +23,5 @@
       }
     }
   },
-  "order": [
-    "main",
-    "best_sellers_KhnbRE"
-  ]
+  "order": ["main", "best_sellers_KhnbRE"]
 }
