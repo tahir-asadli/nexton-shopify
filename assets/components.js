@@ -205,8 +205,12 @@ customElements.define('mobile-menu', MobileMenu)
 class ProductForm extends HTMLElement {
   constructor() {
     super();
-    this.parentDialog = this.closest('.dialog-content') ? 'tru' : 'fals';
-    console.log('this.parentDialog 1', this.parentDialog);
+    this.parentDialog = this.closest('section') ? 'tru' : 'fals';
+    const min = 1;
+    const max = 1000;
+    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    this.dataset.uuid = randomNumber
+
 
     this.form = this.querySelector('form');
     this.fieldset = this.form.querySelector('fieldset');
@@ -219,12 +223,10 @@ class ProductForm extends HTMLElement {
     this.variantIdInput = this.form.querySelector(
       "input[name='id']"
     );
-    // this.quantityPrice = this.querySelector("[name=\"price\"]");
     this.addToCartButton = this.querySelector('button[data-add-to-cart]')
     this.quantity = this.querySelector('span[data-quantity]')
     this.subtotal = this.querySelector('span[data-sub-total]')
     this.total = this.querySelector('span[data-total]')
-    // this.productImage = this.querySelector('img[data-img]')
     this.thumbnailSlider = this.querySelector('.product-thumbnail-slider')
     this.mainSlider = this.querySelector('.product-main-slider')
     this.sliderImages = this.mainSlider.querySelectorAll('li')
@@ -232,12 +234,11 @@ class ProductForm extends HTMLElement {
     this.updateInfo = this.updateInfo.bind(this);
     this.openImageViewer = this.openImageViewer.bind(this)
     this.changeVariant = this.changeVariant.bind(this);
-    // this.images = this.querySelectorAll('img')
-    // this.featuredImage = this.productImage ? this.productImage.src : this.images.length ? this.images[0].src : null;
 
   }
 
   connectedCallback() {
+    console.log('connectedCallback', this, this.variantInputs);
     this.addToCartButton.addEventListener("click", this.addToCart);
     this.quantityInput.addEventListener("change", this.updateInfo);
     this.variantInputs?.forEach((variantInput) => {
@@ -312,8 +313,8 @@ class ProductForm extends HTMLElement {
   changeVariant(e) {
     const variantId = e.target.value;
     const url = `${window.Shopify.routes.root}products/${this.productHandle}?variant=${variantId}&section_id=${this.sectionId}`;
-    console.log('this.parentDialog 2', this.parentDialog);
     this.fieldset.disabled = true;
+    const currentSection = e.target.closest('section');
 
     fetch(url)
       .then(res => res.text())
@@ -323,15 +324,17 @@ class ProductForm extends HTMLElement {
 
         const newSection = tempDiv.querySelector(`[section-id="${this.sectionId}"]`);
         // console.log('newSection', newSection.innerHTML);
-        const currentSection = this.querySelector(`[section-id="${this.sectionId}"]`);
-        console.log(currentSection);
+        // const currentSection = this.querySelector(`[section-id="${this.sectionId}"]`);
 
-        // if (newSection && currentSection) {
-        //   currentSection.replaceWith(newSection);
-        // }
-        // const newURL = new URL(url, window.location.origin);
-        // newURL.searchParams.delete('section_id');
-        // window.history.replaceState({}, '', newURL);
+        console.log(currentSection, newSection);
+        // currentSection.remove();
+
+        if (newSection && currentSection) {
+          currentSection.replaceWith(newSection);
+        }
+        const newURL = new URL(url, window.location.origin);
+        newURL.searchParams.delete('section_id');
+        window.history.replaceState({}, '', newURL);
       })
       .catch(err => console.error('Error fetching variant data:', err)).finally(() => {
         this.fieldset.disabled = false;
@@ -569,10 +572,10 @@ class ProductDialog extends HTMLElement {
       .then(html => {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
-        const productForm = tempDiv.querySelector('[data-main-product]');
-        if (productForm) {
-          // this.dialog.querySelector('.dialog-content').innerHTML = productForm.outerHTML;
-          this.dialogContent.innerHTML = productForm.outerHTML;
+        const productFormEl = tempDiv.querySelector('[data-main-product]');
+        if (productFormEl) {
+          // this.dialog.querySelector('.dialog-content').innerHTML = productFormEl.outerHTML;
+          this.dialogContent.innerHTML = productFormEl.outerHTML;
           this.dialogMessage.innerHTML = '';
         }
       })
