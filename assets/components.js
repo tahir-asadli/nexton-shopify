@@ -13,13 +13,14 @@ const EVENTS = {
 }
 
 class Announcement extends HTMLElement {
+
   constructor() {
     super();
-    this.closeButton = this.querySelector('button');
     this.handleCloseButtonClick = this.handleCloseButtonClick.bind(this);
   }
 
   connectedCallback() {
+    this.closeButton = this.querySelector('button');
     this.closeButton?.addEventListener('click', this.handleCloseButtonClick);
     document.documentElement.classList.add('has-announcement');
   }
@@ -32,30 +33,21 @@ class Announcement extends HTMLElement {
   handleCloseButtonClick(event) {
     this.remove();
   }
+
 }
 customElements.define('announcement-bar', Announcement);
 
 class Notification extends HTMLElement {
+
   constructor() {
     super();
-    this.messageEl = this.querySelector('span[data-message]');
-    this.containerEl = this.querySelector('.container');
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
   }
-  open(e) {
-    this.messageEl.innerHTML = e.detail.message;
-    this.containerEl.classList.remove(e.detail.type == 'error' ? 'success' : 'error')
-    this.containerEl.classList.add(e.detail.type == 'success' ? 'success' : 'error')
-    this.style.display = 'block'
-  }
-  close() {
-    this.style.display = 'none'
-    this.messageEl.innerHTML = '';
-    this.containerEl.classList.remove('success')
-    this.containerEl.classList.remove('error')
-  }
+
   connectedCallback() {
+    this.messageEl = this.querySelector('span[data-message]');
+    this.containerEl = this.querySelector('.container');
     document.addEventListener(EVENTS.SHOW_NOTIFICATION, this.open);
     document.addEventListener(EVENTS.HIDE_NOTIFICATION, this.close);
   }
@@ -64,32 +56,51 @@ class Notification extends HTMLElement {
     document.removeEventListener(EVENTS.SHOW_NOTIFICATION, this.open);
     document.removeEventListener(EVENTS.HIDE_NOTIFICATION, this.close);
   }
+
+  open(e) {
+    this.messageEl.innerHTML = e.detail.message;
+    this.containerEl.classList.remove(e.detail.type == 'error' ? 'success' : 'error')
+    this.containerEl.classList.add(e.detail.type == 'success' ? 'success' : 'error')
+    this.style.display = 'block'
+  }
+
+  close() {
+    this.style.display = 'none'
+    this.messageEl.innerHTML = '';
+    this.containerEl.classList.remove('success')
+    this.containerEl.classList.remove('error')
+  }
+
 }
 
 customElements.define('notification-bar', Notification)
 
 class SearchBar extends HTMLElement {
+
   constructor() {
     super();
     this.handleInput = this.handleInput.bind(this);
     this.handleClear = this.handleClear.bind(this);
-    this.form = this.querySelector('form');
-    this.input = this.form.querySelector('input[name="q"]');
-    this.clearButton = this.form.querySelector('[data-clear]');
   }
 
   connectedCallback() {
-    console.log('connectedCallback');
+    this.form = this.querySelector('form');
+    this.input = this.form.querySelector('input[name="q"]');
+    this.clearButton = this.form.querySelector('[data-clear]');
 
-    this.input.addEventListener('input', this.handleInput);
-    this.clearButton.addEventListener('click', this.handleClear);
-    if (this.input.value.trim() !== '') {
-      this.clearButton.classList.remove('hidden');
-      this.classList.add('search-active');
-    } else {
-      this.clearButton.classList.add('hidden');
-      this.classList.remove('search-active');
+    this.input?.addEventListener('input', this.handleInput);
+    this.clearButton?.addEventListener('click', this.handleClear);
+
+    if (this.input && this.clearButton) {
+      if (this.input.value.trim() !== '') {
+        this.clearButton.classList.remove('hidden');
+        this.classList.add('search-active');
+      } else {
+        this.clearButton.classList.add('hidden');
+        this.classList.remove('search-active');
+      }
     }
+
   }
 
   disconnectedCallback() {
@@ -97,30 +108,36 @@ class SearchBar extends HTMLElement {
   }
 
   handleInput() {
-    if (this.input.value.trim() !== '') {
-      this.clearButton.classList.remove('hidden');
-    } else {
-      this.clearButton.classList.add('hidden');
+    if (this.input && this.clearButton) {
+      if (this.input.value.trim() !== '') {
+        this.clearButton?.classList.remove('hidden');
+      } else {
+        this.clearButton?.classList.add('hidden');
+      }
     }
   }
 
   handleClear() {
-    this.input.value = '';
-    this.clearButton.classList.add('hidden');
-    this.input.focus();
+    if (this.input && this.clearButton) {
+      this.input.value = '';
+      this.clearButton.classList.add('hidden');
+      this.input.focus();
+    }
   }
+
 }
+
 customElements.define('search-bar', SearchBar);
 
 class HeroSlider extends HTMLElement {
   constructor() {
     super();
-    this.sliderEl = this.querySelector('.hero-splide');
     this.splide = null;
     this.initSlider = this.initSlider.bind(this);
   }
 
   connectedCallback() {
+    this.sliderEl = this.querySelector('.hero-splide');
     this.initSlider();
   }
 
@@ -168,23 +185,28 @@ class HeroSlider extends HTMLElement {
       );
     });
   }
+
 }
 
 customElements.define('hero-slider', HeroSlider)
 
 class MobileMenu extends HTMLElement {
+
   constructor() {
     super();
     this.open = this.open.bind(this)
     this.close = this.close.bind(this)
     this.handleClick = this.handleClick.bind(this)
   }
+
   connectedCallback() {
     document.addEventListener('click', this.handleClick)
   }
+
   disconnectedCallback() {
     document.removeEventListener('click', this.handleClick)
   }
+
   handleClick(event) {
     if (event.target.closest('.open-mobile-menu') && !document.documentElement.classList.add('mobile-menu-open')) {
       this.open();
@@ -192,12 +214,15 @@ class MobileMenu extends HTMLElement {
       this.close();
     }
   }
+
   open() {
     document.documentElement.classList.add('mobile-menu-open');
   }
+
   close() {
     document.documentElement.classList.remove('mobile-menu-open');
   }
+
 }
 
 customElements.define('mobile-menu', MobileMenu)
@@ -205,12 +230,15 @@ customElements.define('mobile-menu', MobileMenu)
 class ProductForm extends HTMLElement {
   constructor() {
     super();
-    this.parentDialog = this.closest('section') ? 'tru' : 'fals';
-    const min = 1;
-    const max = 1000;
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    this.dataset.uuid = randomNumber
 
+    this.addToCart = this.addToCart.bind(this);
+    this.updateInfo = this.updateInfo.bind(this);
+    this.openImageViewer = this.openImageViewer.bind(this)
+    this.changeVariant = this.changeVariant.bind(this);
+
+  }
+
+  connectedCallback() {
 
     this.form = this.querySelector('form');
     this.fieldset = this.form.querySelector('fieldset');
@@ -230,15 +258,8 @@ class ProductForm extends HTMLElement {
     this.thumbnailSlider = this.querySelector('.product-thumbnail-slider')
     this.mainSlider = this.querySelector('.product-main-slider')
     this.sliderImages = this.mainSlider.querySelectorAll('li')
-    this.addToCart = this.addToCart.bind(this);
-    this.updateInfo = this.updateInfo.bind(this);
-    this.openImageViewer = this.openImageViewer.bind(this)
-    this.changeVariant = this.changeVariant.bind(this);
 
-  }
 
-  connectedCallback() {
-    console.log('connectedCallback', this, this.variantInputs);
     this.addToCartButton.addEventListener("click", this.addToCart);
     this.quantityInput.addEventListener("change", this.updateInfo);
     this.variantInputs?.forEach((variantInput) => {
@@ -255,17 +276,15 @@ class ProductForm extends HTMLElement {
       arrows: false,
     });
 
-    // 2. Initialize the thumbnail slider
     var thumbnails = new Splide(this.thumbnailSlider, {
-      // fixedWidth: 100,
       fixedHeight: 148,
       gap: 10,
       rewind: true,
       pagination: false,
       arrows: false,
-      isNavigation: true, // Critical for clickable thumbs
-      direction: 'ttb', // Vertical direction
-      height: '640px', // Must specify a height for vertical mode
+      isNavigation: true,
+      direction: 'ttb',
+      height: '640px',
       breakpoints: {
         640: {
           fixedWidth: 50,
@@ -290,15 +309,12 @@ class ProductForm extends HTMLElement {
       },
     });
 
-    // 3. Sync them
     main.sync(thumbnails);
     main.mount();
     thumbnails.mount();
   }
 
   disconnectedCallback() {
-    console.log('product frm disconnectedCallback');
-
     this.addToCartButton.removeEventListener("click", this.addToCart);
     this.quantityInput.removeEventListener("change", this.updateInfo);
     this.variantInputs?.forEach((variantInput) => {
@@ -371,9 +387,7 @@ class ProductForm extends HTMLElement {
         return res.json();
       })
       .then(data => {
-        console.log('data', data?.sections["cart-drawer"]);
         if (data?.sections["cart-drawer"]) {
-
           const cartDrawer = document.querySelector('cart-drawer');
           if (cartDrawer) {
             cartDrawer.parentNode.innerHTML = data?.sections["cart-drawer"];
@@ -477,7 +491,6 @@ class ProductCard extends HTMLElement {
           return res.json();
         })
         .then(data => {
-          console.log('data', data?.sections["cart-drawer"]);
           if (data?.sections["cart-drawer"]) {
 
             const cartDrawer = document.querySelector('cart-drawer');
@@ -716,19 +729,14 @@ class CartButton extends HTMLElement {
   }
 
   updateCartCount(event, initial = false) {
-    console.log('updateCartCount');
-
     fetch(`${window.Shopify.routes.root}cart.js`)
       .then(response => response.json())
       .then(cart => {
-        console.log('cart.item_count', cart.item_count);
-
         this.cartCount.textContent = cart.item_count;
       })
       .catch(error => {
         console.error('Error fetching cart:', error);
       });
-    // this.cartCount.textContent = cart.count ? cart.count : '';
     if (initial !== true) {
       if (!this.cartButton) return;
       document.dispatchEvent(new CustomEvent(EVENTS.OPEN_CART_DRAWER, {
@@ -835,7 +843,6 @@ class ProductCart extends HTMLElement {
     this.quantityInputs = this.querySelectorAll("[data-quantity-input]");
     this.sectionId = this.dataset.sectionId;
     this.updateCartSection = this.updateCartSection.bind(this);
-    console.log('this.updateButton', this.updateButton);
 
   }
 
