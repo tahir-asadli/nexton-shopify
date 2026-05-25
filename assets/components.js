@@ -228,29 +228,23 @@ class MobileMenu extends HTMLElement {
 customElements.define('mobile-menu', MobileMenu)
 
 class ProductForm extends HTMLElement {
+
   constructor() {
     super();
-
     this.addToCart = this.addToCart.bind(this);
     this.updateInfo = this.updateInfo.bind(this);
     this.openImageViewer = this.openImageViewer.bind(this)
     this.changeVariant = this.changeVariant.bind(this);
-
   }
 
   connectedCallback() {
-
     this.form = this.querySelector('form');
     this.fieldset = this.form.querySelector('fieldset');
     this.variantInputs = this.fieldset.querySelectorAll('[data-variant-input]')
     this.productHandle = this.dataset.productHandle;
     this.sectionId = this.dataset.sectionId;
-    this.quantityInput = this.form.querySelector(
-      "input[name='quantity']"
-    );
-    this.variantIdInput = this.form.querySelector(
-      "input[name='id']"
-    );
+    this.quantityInput = this.form.querySelector("input[name='quantity']");
+    this.variantIdInput = this.form.querySelector("input[name='id']");
     this.addToCartButton = this.querySelector('button[data-add-to-cart]')
     this.quantity = this.querySelector('span[data-quantity]')
     this.subtotal = this.querySelector('span[data-sub-total]')
@@ -260,8 +254,8 @@ class ProductForm extends HTMLElement {
     this.sliderImages = this.mainSlider.querySelectorAll('li')
 
 
-    this.addToCartButton.addEventListener("click", this.addToCart);
-    this.quantityInput.addEventListener("change", this.updateInfo);
+    this.addToCartButton?.addEventListener("click", this.addToCart);
+    this.quantityInput?.addEventListener("change", this.updateInfo);
     this.variantInputs?.forEach((variantInput) => {
       variantInput.addEventListener('change', this.changeVariant)
     });
@@ -269,54 +263,12 @@ class ProductForm extends HTMLElement {
       sliderImage.addEventListener('click', this.openImageViewer)
     })
 
-    var main = new Splide(this.mainSlider, {
-      type: 'fade',
-      rewind: true,
-      pagination: false,
-      arrows: false,
-    });
-
-    var thumbnails = new Splide(this.thumbnailSlider, {
-      fixedHeight: 148,
-      gap: 10,
-      rewind: true,
-      pagination: false,
-      arrows: false,
-      isNavigation: true,
-      direction: 'ttb',
-      height: '640px',
-      breakpoints: {
-        640: {
-          fixedWidth: 50,
-          fixedHeight: 60,
-        },
-        768: {
-          fixedWidth: 60,
-          fixedHeight: 60,
-        },
-        1024: {
-          fixedWidth: 70,
-          fixedHeight: 70,
-        },
-        1280: {
-          fixedWidth: 80,
-          fixedHeight: 80,
-        },
-        1536: {
-          fixedWidth: 90,
-          fixedHeight: 90,
-        },
-      },
-    });
-
-    main.sync(thumbnails);
-    main.mount();
-    thumbnails.mount();
+    this.initSlider();
   }
 
   disconnectedCallback() {
-    this.addToCartButton.removeEventListener("click", this.addToCart);
-    this.quantityInput.removeEventListener("change", this.updateInfo);
+    this.addToCartButton?.removeEventListener("click", this.addToCart);
+    this.quantityInput?.removeEventListener("change", this.updateInfo);
     this.variantInputs?.forEach((variantInput) => {
       variantInput.removeEventListener('change', this.changeVariant)
     });
@@ -433,20 +385,72 @@ class ProductForm extends HTMLElement {
     }));
   }
 
+  initSlider() {
+
+    if (!this.mainSlider || !this.thumbnailSlider) {
+      return;
+    }
+
+    var main = new Splide(this.mainSlider, {
+      type: 'fade',
+      rewind: true,
+      pagination: false,
+      arrows: false,
+    });
+
+    var thumbnails = new Splide(this.thumbnailSlider, {
+      fixedHeight: 148,
+      gap: 10,
+      rewind: true,
+      pagination: false,
+      arrows: false,
+      isNavigation: true,
+      direction: 'ttb',
+      height: '640px',
+      breakpoints: {
+        640: {
+          fixedWidth: 50,
+          fixedHeight: 60,
+        },
+        768: {
+          fixedWidth: 60,
+          fixedHeight: 60,
+        },
+        1024: {
+          fixedWidth: 70,
+          fixedHeight: 70,
+        },
+        1280: {
+          fixedWidth: 80,
+          fixedHeight: 80,
+        },
+        1536: {
+          fixedWidth: 90,
+          fixedHeight: 90,
+        },
+      },
+    });
+
+    main.sync(thumbnails);
+    main.mount();
+    thumbnails.mount();
+  }
+
 }
 
 customElements.define('product-form', ProductForm)
 
 class ProductCard extends HTMLElement {
+
   constructor() {
     super();
+    this.handleClick = this.handleClick.bind(this);
+  }
+  connectedCallback() {
     this.button = this.querySelector('button')
     this.type = this.button?.dataset.type;
     this.variantId = this.button?.dataset.variantId;
     this.productHandle = this.button?.dataset.productHandle;
-    this.handleClick = this.handleClick.bind(this);
-  }
-  connectedCallback() {
     this.button?.addEventListener('click', this.handleClick);
   }
 
@@ -455,7 +459,6 @@ class ProductCard extends HTMLElement {
   }
 
   handleClick() {
-
     if (this.type == 'choose-options') {
       this.button.classList.remove('adding')
       document.dispatchEvent(new CustomEvent(EVENTS.OPEN_PRODUCT_DIALOG, {
@@ -523,35 +526,37 @@ class ProductCard extends HTMLElement {
         })
     }
   }
-
 }
 
 customElements.define('product-card', ProductCard)
 
 class ProductDialog extends HTMLElement {
+
   constructor() {
     super();
-    this.dialog = this.querySelector('dialog');
-    this.dialogContent = this.dialog.querySelector('.dialog-content');
-    this.dialogMessage = this.dialog.querySelector('.dialog-message');
-    this.closeButton = this.dialog.querySelector('#close-dialog');
     this.openDialog = this.openDialog.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
     this.loadProduct = this.loadProduct.bind(this);
   }
+
   connectedCallback() {
+    this.dialog = this.querySelector('dialog');
+    this.dialogContent = this.dialog.querySelector('.dialog-content');
+    this.dialogMessage = this.dialog.querySelector('.dialog-message');
+    this.closeButton = this.dialog.querySelector('#close-dialog');
     this.closeButton?.addEventListener('click', this.closeDialog);
+    this.dialog?.addEventListener('close', this.closeDialog);
     document.addEventListener(EVENTS.OPEN_PRODUCT_DIALOG, this.openDialog);
     document.addEventListener(EVENTS.CLOSE_PRODUCT_DIALOG, this.closeDialog);
-    this.dialog.addEventListener('close', this.closeDialog);
   }
 
   disconnectedCallback() {
     this.closeButton?.removeEventListener('click', this.closeDialog);
+    this.dialog?.removeEventListener('close', this.closeDialog);
     document.removeEventListener(EVENTS.OPEN_PRODUCT_DIALOG, this.openDialog);
     document.removeEventListener(EVENTS.CLOSE_PRODUCT_DIALOG, this.closeDialog);
-    this.dialog.removeEventListener('close', this.closeDialog);
   }
+
   closeDialog() {
     this.dialog.close();
     document.documentElement.classList.remove('dialog-open');
@@ -580,7 +585,6 @@ class ProductDialog extends HTMLElement {
         tempDiv.innerHTML = html;
         const productFormEl = tempDiv.querySelector('[data-main-product]');
         if (productFormEl) {
-          // this.dialog.querySelector('.dialog-content').innerHTML = productFormEl.outerHTML;
           this.dialogContent.innerHTML = productFormEl.outerHTML;
           this.dialogMessage.innerHTML = '';
         }
@@ -588,12 +592,6 @@ class ProductDialog extends HTMLElement {
       .catch(err => {
         console.error('Error fetching product dialog content:', err);
         this.dialogMessage.innerHTML = err;
-        // document.dispatchEvent(new CustomEvent('show-notification', {
-        //   detail: {
-        //     type: 'error',
-        //     message: 'Error loading product details!',
-        //   }, bubbles: true
-        // }));
       });
   }
 
@@ -602,24 +600,24 @@ class ProductDialog extends HTMLElement {
 customElements.define('product-dialog', ProductDialog)
 
 class QuantityInput extends HTMLElement {
+
   constructor() {
     super();
-
-    this.quantityInput = this.querySelector("[type=\"number\"]");
-    this.minusButton = this.querySelector("[data-minus]");
-    this.plusButton = this.querySelector("[data-plus]");
     this.handleMinusClick = this.handleMinusClick.bind(this);
     this.handlePlusClick = this.handlePlusClick.bind(this);
   }
 
   connectedCallback() {
-    this.minusButton.addEventListener("click", this.handleMinusClick);
-    this.plusButton.addEventListener("click", this.handlePlusClick);
+    this.quantityInput = this.querySelector("[type=\"number\"]");
+    this.minusButton = this.querySelector("[data-minus]");
+    this.plusButton = this.querySelector("[data-plus]");
+    this.minusButton?.addEventListener("click", this.handleMinusClick);
+    this.plusButton?.addEventListener("click", this.handlePlusClick);
   }
 
   disconnectedCallback() {
-    this.minusButton.removeEventListener("click", this.handleMinusClick);
-    this.plusButton.removeEventListener("click", this.handlePlusClick);
+    this.minusButton?.removeEventListener("click", this.handleMinusClick);
+    this.plusButton?.removeEventListener("click", this.handlePlusClick);
   }
 
   handleMinusClick() {
@@ -627,7 +625,7 @@ class QuantityInput extends HTMLElement {
       return;
     }
     this.quantityInput.value = parseInt(this.quantityInput.value) - 1;
-    this.quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+    this.quantityInput?.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   handlePlusClick() {
@@ -636,15 +634,23 @@ class QuantityInput extends HTMLElement {
       return;
     }
     this.quantityInput.value = parseInt(this.quantityInput.value) + 1;
-    this.quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+    this.quantityInput?.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
 }
+
 customElements.define('quantity-input', QuantityInput)
 
 class CartDrawer extends HTMLElement {
+
   constructor() {
     super();
+    this.openDrawer = this.openDrawer.bind(this);
+    this.closeDrawer = this.closeDrawer.bind(this);
+    this.onEscape = this.onEscape.bind(this);
+  }
+
+  connectedCallback() {
     this.closeButton = this.querySelector('[data-close]')
     this.drawer = this.querySelector('[data-drawer]')
     this.drawerContainer = this.querySelector('[data-drawer-container]')
@@ -653,18 +659,11 @@ class CartDrawer extends HTMLElement {
     this.drawerItems = this.querySelector('[data-drawer-items]')
     this.overlay = this.querySelector('[data-overlay]')
 
-    this.openDrawer = this.openDrawer.bind(this);
-    this.closeDrawer = this.closeDrawer.bind(this);
-    this.onEscape = this.onEscape.bind(this);
-  }
-
-  connectedCallback() {
     document.addEventListener(EVENTS.OPEN_CART_DRAWER, this.openDrawer)
     document.addEventListener(EVENTS.CLOSE_CART_DRAWER, this.closeDrawer)
     document.addEventListener('keydown', this.onEscape);
     document.addEventListener('click', this.onEscape)
-    // this.closeButton.addEventListener('click', this.closeDrawer)
-    this.overlay.addEventListener('click', this.closeDrawer)
+    this.overlay?.addEventListener('click', this.closeDrawer)
   }
 
 
@@ -673,8 +672,7 @@ class CartDrawer extends HTMLElement {
     document.removeEventListener(EVENTS.CLOSE_CART_DRAWER, this.closeDrawer);
     document.removeEventListener('keydown', this.onEscape);
     document.removeEventListener('click', this.onEscape);
-    // this.closeButton.removeEventListener('click', this.closeDrawer)
-    this.overlay.removeEventListener('click', this.closeDrawer)
+    this.overlay?.removeEventListener('click', this.closeDrawer)
   }
 
   onEscape(event) {
@@ -688,16 +686,15 @@ class CartDrawer extends HTMLElement {
   }
 
   openDrawer(event) {
-
     document.documentElement.classList.add('cart-drawer-open');
     const contentHeight = this.drawerContainerInner.scrollHeight;
-
     this.drawerContainer.style.height = (contentHeight) + 'px';
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
     });
   }
+
   closeDrawer() {
     this.drawerContainer.style.height = '0px';
     document.documentElement.classList.remove('cart-drawer-open');
@@ -707,25 +704,24 @@ class CartDrawer extends HTMLElement {
 customElements.define('cart-drawer', CartDrawer)
 
 class CartButton extends HTMLElement {
+
   constructor() {
     super();
-    this.cartButton = this.querySelector('[data-button]');
-    this.cartCount = this.cartButton.querySelector('[data-cart-count]');
-
     this.updateCartCount = this.updateCartCount.bind(this);
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
 
   connectedCallback() {
+    this.cartButton = this.querySelector('[data-button]');
+    this.cartCount = this.cartButton?.querySelector('[data-cart-count]');
     this.updateCartCount(this, true)
     document.addEventListener(EVENTS.CART_UPDATED, this.updateCartCount)
-
-    this.cartButton.addEventListener('click', this.toggleDrawer)
+    this.cartButton?.addEventListener('click', this.toggleDrawer)
   }
 
   disconnectedCallback() {
     document.removeEventListener(EVENTS.CART_UPDATED, this.updateCartCount);
-    this.cartButton.removeEventListener('click', this.toggleDrawer);
+    this.cartButton?.removeEventListener('click', this.toggleDrawer);
   }
 
   updateCartCount(event, initial = false) {
@@ -754,32 +750,33 @@ class CartButton extends HTMLElement {
 
 customElements.define('cart-button', CartButton)
 
-
 class CartItem extends HTMLElement {
-  constructor() {
 
+  constructor() {
     super();
-    this.removeButton = this.querySelector('[data-remove]');
-    this.itemKey = this.dataset.key;
     this.removeItem = this.removeItem.bind(this);
   }
 
   connectedCallback() {
-    this.removeButton.addEventListener('click', this.removeItem, true)
+    this.removeButton = this.querySelector('[data-remove]');
+    this.itemKey = this.dataset.key;
+    this.removeButton?.addEventListener('click', this.removeItem, true)
   }
 
 
   disconnectedCallback() {
-    this.removeButton.removeEventListener('click', this.removeItem)
+    this.removeButton?.removeEventListener('click', this.removeItem)
   }
 
   removeItem() {
     const url = `${window.Shopify.routes.root}cart/change.js`;
+
     const formData = {
       quantity: 0,
       id: this.itemKey,
       sections: 'cart-drawer'
     }
+
     fetch(url, {
       method: 'POST',
       body: JSON.stringify(formData),
@@ -820,40 +817,33 @@ class CartItem extends HTMLElement {
           }, bubbles: true
         }));
       })
-
-    // const items = cart.remove(this.dataset.index);
-    // this.removeButton.closest('cart-item').remove();
-    // document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
-    //   bubbles: true
-    // }));
   }
 }
 
 customElements.define('cart-item', CartItem)
 
 class ProductCart extends HTMLElement {
+
   constructor() {
     super();
-
-    this.form = this.querySelector('form');
-    this.formFieldset = this.form.querySelector('fieldset');
-    this.updateButton = this.form.querySelector('[data-update-button]');
     this.updateCart = this.updateCart.bind(this);
-    this.sectionId = this.dataset.sectionId;
-    this.quantityInputs = this.querySelectorAll("[data-quantity-input]");
-    this.sectionId = this.dataset.sectionId;
     this.updateCartSection = this.updateCartSection.bind(this);
 
   }
 
   connectedCallback() {
-
-    this.updateButton.addEventListener('click', this.updateCart, true)
+    this.form = this.querySelector('form');
+    this.formFieldset = this.form.querySelector('fieldset');
+    this.updateButton = this.form.querySelector('[data-update-button]');
+    this.sectionId = this.dataset.sectionId;
+    this.quantityInputs = this.querySelectorAll("[data-quantity-input]");
+    this.sectionId = this.dataset.sectionId;
+    this.updateButton?.addEventListener('click', this.updateCart, true)
   }
 
 
   disconnectedCallback() {
-    this.updateButton.removeEventListener('click', this.updateCart)
+    this.updateButton?.removeEventListener('click', this.updateCart)
   }
 
   updateCart(event) {
@@ -887,6 +877,7 @@ class ProductCart extends HTMLElement {
         this.formFieldset.disabled = false;
       });
   }
+
   updateCartSection() {
     const url = `${window.Shopify.routes.root}cart?section_id=${this.sectionId}`;
     fetch(url)
@@ -903,7 +894,6 @@ class ProductCart extends HTMLElement {
         const currentSection = document.querySelector(`#shopify-section-${this.sectionId}`);
         if (newSection && currentSection) {
           currentSection.replaceWith(newSection);
-
           document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
             detail: {
               type: 'success',
@@ -926,24 +916,24 @@ class ProductCart extends HTMLElement {
 
 customElements.define('product-cart', ProductCart)
 
-
 class ImageViewerWindow extends HTMLElement {
+
   constructor() {
     super();
-    this.content = this.querySelector('main')
-    this.innerContent = this.querySelector('&>div>div')
-
-    this.nav = this.querySelector('nav')
-    this.closeButton = this.querySelector('button.close')
-
-    this.images = this.nav.querySelectorAll('img') ?? [];
     this.navigate = this.navigate.bind(this);
     this.close = this.close.bind(this)
     this.open = this.open.bind(this)
 
   }
+
   connectedCallback() {
-    this.images.forEach((image, index) => {
+    this.content = this.querySelector('main')
+    this.innerContent = this.querySelector('&>div>div')
+    this.nav = this.querySelector('nav')
+    this.closeButton = this.querySelector('button.close')
+    this.images = this.nav.querySelectorAll('img') ?? [];
+
+    this?.images.forEach((image, index) => {
       image.addEventListener('click', this.navigate)
     });
 
@@ -963,6 +953,7 @@ class ImageViewerWindow extends HTMLElement {
         }
       });
     });
+
     this.content.querySelectorAll('img').forEach(el => observer.observe(el));
 
     this.closeButton?.addEventListener('click', this.close)
@@ -971,14 +962,15 @@ class ImageViewerWindow extends HTMLElement {
     document.addEventListener(EVENTS.OPEN_IMAGE_VIEWER, (e) => {
       this.open(e.detail.index)
     })
+
     this.addEventListener('click', this.close)
   }
 
   disconnectedCallback() {
-    this.images.forEach((image, index) => {
+    this?.images.forEach((image, index) => {
       image.removeEventListener('click', this.navigate)
     });
-    this.closeButton.removeEventListener('click', this.close)
+    this?.closeButton.removeEventListener('click', this.close)
     document.removeEventListener('keydown', this.onEscape);
   }
 
@@ -995,6 +987,7 @@ class ImageViewerWindow extends HTMLElement {
       });
     }
   }
+
   open(index) {
     const images = Array.from(this.content.children);
     document.documentElement.classList.add('image-viewer-open')
@@ -1002,189 +995,13 @@ class ImageViewerWindow extends HTMLElement {
       images[index].scrollIntoView({})
     }
   }
+
   close(e) {
     if (e.target.tagName == 'IMAGE-VIEWER-WINDOW' || e.key === 'Escape') {
       document.documentElement.classList.remove('image-viewer-open')
     }
-
   }
+
 }
+
 customElements.define('image-viewer-window', ImageViewerWindow)
-
-// class SplideExplore extends HTMLElement {
-//   constructor() {
-//     super();
-//     this.sliderEl = this.querySelector('.splide-explore');
-//     this.splide = null;
-//     this.initSlider = this.initSlider.bind(this);
-//   }
-
-//   connectedCallback() {
-//     this.initSlider();
-//   }
-
-//   disconnectedCallback() {
-//     if (!this.splide) return;
-//     this.splide.destroy();
-//   }
-
-//   initSlider() {
-//     if (!this.sliderEl) return;
-//     this.splide = new Splide(this.sliderEl, {
-//       type: 'loop',
-//       perPage: 3,
-//       perMove: 1,
-//       pagination: true,
-//       arrows: false,
-//       autoplay: true,
-//       interval: 20000,
-//       speed: 2000,
-//       gap: 20,
-//       breakpoints: {
-//         1024: {
-//           perPage: 1,
-//         },
-//         1280: {
-//           perPage: 2,
-//         },
-//       }
-//     }).mount();
-
-//   }
-// }
-
-// customElements.define('splide-explore', SplideExplore)
-
-// class ProductCard extends HTMLElement {
-//   constructor() {
-//     super();
-
-//     this.addToCartButton = this.querySelector('[data-add-to-cart]')
-//     this.addToCart = this.addToCart.bind(this)
-//     this.dataUrl = this.querySelector('[data-url]');
-//     this.dataImg = this.querySelector('[data-img]');
-//     this.dataTitle = this.querySelector('[data-title]');
-//     this.dataPrice = this.querySelector('[data-price]');
-
-//   }
-
-//   connectedCallback() {
-//     this.addToCartButton.addEventListener('click', this.addToCart);
-//   }
-
-//   disconnectedCallback() {
-//     this.addToCartButton.removeEventListener('click', this.addToCart);
-//   }
-
-//   addToCart() {
-//     const items = cart.add({
-//       title: this.dataTitle.textContent,
-//       quantity: 1,
-//       price: this.dataPrice.textContent.replace('$', ''),
-//       image: this.dataImg.src
-//     })
-//     document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
-//       bubbles: true
-//     }));
-//   }
-// }
-
-// customElements.define('product-card', ProductCard)
-
-
-
-// class PriceSlider extends HTMLElement {
-//   constructor() {
-//     super();
-//     this.sliderEl = this.querySelector('[data-slider]');
-//     this.priceMinEl = this.querySelector('[price-min]');
-//     this.priceMaxEl = this.querySelector('[price-max]');
-//     // this.min = Number(this.priceMinEl.min) || 1;
-//     // this.max = Number(this.priceMinEl.max) || 100;
-//     // this.minValue = this.priceMinEl.value ? Number(this.priceMinEl.value) : undefined;
-//     // this.maxValue = this.priceMaxEl.value ? Number(this.priceMaxEl.value) : undefined;
-//     this.min = this.sliderEl.dataset.min ? Number(this.sliderEl.dataset.min) : 1
-//     this.max = this.sliderEl.dataset.max ? Number(this.sliderEl.dataset.max) : 100
-//     this.minValue = this.sliderEl.dataset.minValue ? Number(this.sliderEl.dataset.minValue) : undefined;
-//     this.maxValue = this.sliderEl.dataset.maxValue ? Number(this.sliderEl.dataset.maxValue) : undefined;
-//     this.slider = null;
-
-//   }
-//   connectedCallback() {
-//     if (this.sliderEl) {
-//       this.slider = createRangeSlider(this.sliderEl, {
-//         min: this.min,
-//         max: this.max,
-//         step: 1,
-//         minValue: this.minValue,
-//         maxValue: this.maxValue,
-//         labelPrefix: '',
-//         labelSuffix: '',
-//         label: false,
-//       });
-//       this.slider.sliderElement.addEventListener('rangeChange', (e) => {
-//         if (this.priceMinEl) {
-//           this.priceMinEl.value = e.detail.min;
-//           this.priceMaxEl.value = e.detail.max;
-//         }
-//       });
-//       this.slider.sliderElement.addEventListener('rangeChanging', (e) => {
-//         if (this.priceMinEl) {
-//           this.priceMinEl.value = e.detail.min;
-//           this.priceMaxEl.value = e.detail.max;
-//         }
-//       });
-//     }
-//     if (this.priceMaxEl) {
-//       this.priceMaxEl.addEventListener('change', () => {
-//         this.slider.update(this.priceMinEl.value,
-//           this.priceMaxEl.value);
-//       })
-//     }
-//     if (this.priceMinEl) {
-//       this.priceMinEl.addEventListener('change', () => {
-//         this.slider.update(this.priceMinEl.value,
-//           this.priceMaxEl.value)
-//       })
-//     }
-//   }
-
-//   disconnectedCallback() {
-//   }
-// }
-
-// customElements.define('price-slider', PriceSlider);
-
-
-// class ProductFilter extends HTMLElement {
-//   constructor() {
-//     super();
-//     this.open = this.open.bind(this)
-//     this.close = this.close.bind(this)
-//     this.handleClick = this.handleClick.bind(this)
-//   }
-//   connectedCallback() {
-//     document.addEventListener('click', this.handleClick)
-//   }
-//   disconnectedCallback() {
-//     document.removeEventListener('click', this.handleClick)
-//   }
-//   handleClick(event) {
-//     if (event.target.closest('.open-product-filter') && !document.documentElement.classList.add('product-filter-open')) {
-//       this.open();
-//     } else if (event.target.closest('.close-product-filter') && !document.documentElement.classList.add('product-filter-open')) {
-//       this.close();
-//     } else if (event.target.closest('product-filter') == event.target.parentNode) {
-//       this.close();
-//     }
-//   }
-//   open() {
-//     document.documentElement.classList.add('product-filter-open');
-//   }
-//   close() {
-//     document.documentElement.classList.remove('product-filter-open');
-//   }
-// }
-
-// customElements.define('product-filter', ProductFilter)
-
