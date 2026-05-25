@@ -12,9 +12,19 @@
     "main": {
       "type": "cart",
       "settings": {}
+    },
+    "collection_grid_bRWnYr": {
+      "type": "collection-grid",
+      "name": "Collection grid",
+      "settings": {
+        "title": "Recommended products",
+        "subtitle": "",
+        "collection": "automated-collection"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "collection_grid_bRWnYr"
   ]
 }
