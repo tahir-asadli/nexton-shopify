@@ -9,7 +9,6 @@ const EVENTS = {
   HIDE_NOTIFICATION: 'hide-notification',
   OPEN_PRODUCT_DIALOG: 'open-product-dialog',
   CLOSE_PRODUCT_DIALOG: 'close-product-dialog',
-  UPDATE_CART_BUTTON: 'update-cart-button',
 }
 
 class Announcement extends HTMLElement {
@@ -321,7 +320,7 @@ class ProductForm extends HTMLElement {
         quantity: this.quantityInput.value,
         id: this.variantIdInput.value
       }],
-      sections: 'cart-drawer'
+      sections: 'cart-drawer,cart'
     }
     fetch(url, {
       method: 'POST',
@@ -344,6 +343,9 @@ class ProductForm extends HTMLElement {
           if (cartDrawer) {
             cartDrawer.parentNode.innerHTML = data?.sections["cart-drawer"];
           }
+        }
+        if (data?.sections["cart"]) {
+          updateCartSection(data?.sections["cart"]);
         }
         document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
           detail: {
@@ -476,7 +478,7 @@ class ProductCard extends HTMLElement {
           quantity: 1,
           id: this.variantId
         }],
-        sections: 'cart-drawer'
+        sections: 'cart-drawer,cart'
       }
       fetch(url, {
         method: 'POST',
@@ -500,6 +502,9 @@ class ProductCard extends HTMLElement {
             if (cartDrawer) {
               cartDrawer.parentNode.innerHTML = data?.sections["cart-drawer"];
             }
+          }
+          if (data?.sections["cart"]) {
+            updateCartSection(data?.sections["cart"]);
           }
           document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
             detail: {
@@ -760,6 +765,7 @@ class CartItem extends HTMLElement {
   connectedCallback() {
     this.removeButton = this.querySelector('[data-remove]');
     this.itemKey = this.dataset.key;
+    this.sectionId = this.removeButton.dataset.sectionId;
     this.removeButton?.addEventListener('click', this.removeItem, true)
   }
 
@@ -769,12 +775,16 @@ class CartItem extends HTMLElement {
   }
 
   removeItem() {
+    if (!confirm('Are you sure you want to remove this item from the cart?')) {
+      return;
+    }
+
     const url = `${window.Shopify.routes.root}cart/change.js`;
 
     const formData = {
       quantity: 0,
       id: this.itemKey,
-      sections: 'cart-drawer'
+      sections: 'cart-drawer,cart'
     }
 
     fetch(url, {
@@ -795,10 +805,16 @@ class CartItem extends HTMLElement {
       .then(data => {
         if (data?.sections["cart-drawer"]) {
           const cartDrawer = document.querySelector('cart-drawer');
+
           if (cartDrawer) {
             cartDrawer.parentNode.innerHTML = data?.sections["cart-drawer"];
           }
         }
+        if (data?.sections["cart"]) {
+          updateCartSection(data?.sections["cart"]);
+        }
+
+
         document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
           detail: {
             type: 'success',
@@ -849,7 +865,7 @@ class ProductCart extends HTMLElement {
   updateCart(event) {
     event.preventDefault();
     const formData = new FormData(this.form);
-    formData.append('sections', 'cart-drawer')
+    // formData.append('sections', 'cart-drawer')
     this.formFieldset.disabled = true;
     fetch(`${window.Shopify.routes.root}cart/update.js`, {
       method: 'POST',
@@ -1005,3 +1021,23 @@ class ImageViewerWindow extends HTMLElement {
 }
 
 customElements.define('image-viewer-window', ImageViewerWindow)
+
+
+const updateCartSection = (cartSectionHTML = '') => {
+  if (!cartSectionHTML) {
+    return;
+  }
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = cartSectionHTML;
+  const cartSectionId = 'cart-section';
+  const newCartSection = tempDiv.querySelector(`#${cartSectionId}`);
+
+  if (newCartSection && newCartSection.id != '') {
+    const currentCartSection = document.querySelector(`#${cartSectionId}`)
+    if (currentCartSection) {
+      currentCartSection.replaceWith(newCartSection)
+    }
+  }
+
+}
