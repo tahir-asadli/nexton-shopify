@@ -289,9 +289,17 @@ class ProductForm extends HTMLElement {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
         const newSection = tempDiv.querySelector(`[section-id="${this.sectionId}"]`);
+        const newImageViewerWindow = tempDiv.querySelector(`#image-viewer-window-${this.sectionId}`);
+        const currentImageViewerWindow = document.querySelector(`#image-viewer-window-${this.sectionId}`);
+
         if (newSection && currentSection) {
           currentSection.replaceWith(newSection);
         }
+
+        if (newImageViewerWindow && currentImageViewerWindow) {
+          currentImageViewerWindow.replaceWith(newImageViewerWindow);
+        }
+
         const newURL = new URL(url, window.location.origin);
         newURL.searchParams.delete('section_id');
         window.history.replaceState({}, '', newURL);
@@ -950,7 +958,6 @@ class ImageViewerWindow extends HTMLElement {
     this.content = this.querySelector('main')
     this.innerContent = this.querySelector('&>div>div')
     this.nav = this.querySelector('nav')
-    this.closeButton = this.querySelector('button.close')
     this.images = this.nav.querySelectorAll('img') ?? [];
 
     this?.images.forEach((image, index) => {
@@ -976,8 +983,6 @@ class ImageViewerWindow extends HTMLElement {
 
     this.content.querySelectorAll('img').forEach(el => observer.observe(el));
 
-    this.closeButton?.addEventListener('click', this.close)
-
     document.addEventListener('keydown', this.close);
     document.addEventListener(EVENTS.OPEN_IMAGE_VIEWER, (e) => {
       this.open(e.detail.index)
@@ -990,7 +995,6 @@ class ImageViewerWindow extends HTMLElement {
     this?.images.forEach((image, index) => {
       image.removeEventListener('click', this.navigate)
     });
-    this?.closeButton.removeEventListener('click', this.close)
     document.removeEventListener('keydown', this.onEscape);
   }
 
@@ -1025,26 +1029,6 @@ class ImageViewerWindow extends HTMLElement {
 }
 
 customElements.define('image-viewer-window', ImageViewerWindow)
-
-
-const updateCartSection = (cartSectionHTML = '') => {
-  if (!cartSectionHTML) {
-    return;
-  }
-
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = cartSectionHTML;
-  const cartSectionId = 'cart-section';
-  const newCartSection = tempDiv.querySelector(`#${cartSectionId}`);
-
-  if (newCartSection && newCartSection.id != '') {
-    const currentCartSection = document.querySelector(`#${cartSectionId}`)
-    if (currentCartSection) {
-      currentCartSection.replaceWith(newCartSection)
-    }
-  }
-
-}
 
 class DiscountForm extends HTMLElement {
   constructor() {
@@ -1113,4 +1097,25 @@ class DiscountForm extends HTMLElement {
       });
   }
 }
+
 customElements.define('discount-form', DiscountForm);
+
+
+const updateCartSection = (cartSectionHTML = '') => {
+  if (!cartSectionHTML) {
+    return;
+  }
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = cartSectionHTML;
+  const cartSectionId = 'cart-section';
+  const newCartSection = tempDiv.querySelector(`#${cartSectionId}`);
+
+  if (newCartSection && newCartSection.id != '') {
+    const currentCartSection = document.querySelector(`#${cartSectionId}`)
+    if (currentCartSection) {
+      currentCartSection.replaceWith(newCartSection)
+    }
+  }
+
+}

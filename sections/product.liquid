@@ -276,37 +276,40 @@
   </div>
 </section>
 
-<image-viewer-window class="hidden in-[.image-viewer-open]:flex">
-  <div class="">
-    <div>
-      <main>
-        {% if product.selected_or_first_available_variant.metafields.custom.variant_images.value.size > 0 %}
-          {% for image in product.selected_or_first_available_variant.metafields.custom.variant_images.value %}
-            {{ image | image_url: width: 1024, height: 1024, crop: 'top' | image_tag }}
-          {% endfor %}
-        {% else %}
-          {% for image in product.images %}
-            {{ image | image_url: width: 1024, height: 1024, crop: 'top' | image_tag }}
-          {% endfor %}
-        {% endif %}
-      </main>
-      <nav>
-        <div>
+<div id="image-viewer-window-{{ section.id }}">
+  <image-viewer-window class="hidden in-[.image-viewer-open]:flex">
+    <div class="">
+      {{ product.selected_or_first_available_variant.price }}
+      <div>
+        <main>
           {% if product.selected_or_first_available_variant.metafields.custom.variant_images.value.size > 0 %}
             {% for image in product.selected_or_first_available_variant.metafields.custom.variant_images.value %}
-              {{ image | image_url: width: 256, height: 256, crop: 'top' | image_tag }}
+              {{ image | image_url: width: 1024, height: 1024, crop: 'top' | image_tag }}
             {% endfor %}
           {% else %}
             {% for image in product.images %}
-              {{ image | image_url: width: 256, height: 256, crop: 'top' | image_tag }}
+              {{ image | image_url: width: 1024, height: 1024, crop: 'top' | image_tag }}
             {% endfor %}
           {% endif %}
-        </div>
-      </nav>
+        </main>
+        <nav>
+          <div>
+            {% if product.selected_or_first_available_variant.metafields.custom.variant_images.value.size > 0 %}
+              {% for image in product.selected_or_first_available_variant.metafields.custom.variant_images.value %}
+                {{ image | image_url: width: 256, height: 256, crop: 'top' | image_tag }}
+              {% endfor %}
+            {% else %}
+              {% for image in product.images %}
+                {{ image | image_url: width: 256, height: 256, crop: 'top' | image_tag }}
+              {% endfor %}
+            {% endif %}
+          </div>
+        </nav>
+      </div>
+      <!-- <button class="close">&times;</button> -->
     </div>
-    <!-- <button class="close">&times;</button> -->
-  </div>
-</image-viewer-window>
+  </image-viewer-window>
+</div>
 
 {% schema %}
 {
