@@ -56,16 +56,29 @@
               <div class="min-h-0 product-main-slider splide h-60 sm:h-80 md:h-100 lg:h-160">
                 <div class="splide__track">
                   <ul class="splide__list">
-                    {% for image in product.images %}
-                      <li class="splide__slide h-60 sm:h-80 md:h-100 lg:h-160">
-                        {{
-                          image
-                          | image_url: width: 1024, height: 1024, crop: 'top'
-                          | image_tag:
-                            class: 'w-full h-full object-contain lg:object-cover object-top rounded-2xl cursor-pointer'
-                        }}
-                      </li>
-                    {% endfor %}
+                    {% if product.selected_or_first_available_variant.metafields.custom.variant_images.value.size > 0 %}
+                      {% for image in product.selected_or_first_available_variant.metafields.custom.variant_images.value %}
+                        <li class="splide__slide h-60 sm:h-80 md:h-100 lg:h-160">
+                          {{
+                            image
+                            | image_url: width: 1024, height: 1024, crop: 'top'
+                            | image_tag:
+                              class: 'w-full h-full object-contain lg:object-cover object-top rounded-2xl cursor-pointer'
+                          }}
+                        </li>
+                      {% endfor %}
+                    {% else %}
+                      {% for image in product.images %}
+                        <li class="splide__slide h-60 sm:h-80 md:h-100 lg:h-160">
+                          {{
+                            image
+                            | image_url: width: 1024, height: 1024, crop: 'top'
+                            | image_tag:
+                              class: 'w-full h-full object-contain lg:object-cover object-top rounded-2xl cursor-pointer'
+                          }}
+                        </li>
+                      {% endfor %}
+                    {% endif %}
                   </ul>
                 </div>
               </div>
@@ -148,6 +161,10 @@
                                       background-color: {{ value.swatch.color }};
                                       {%- if value == 'Yellow' -%}
                                       background-image: url({{ product.metafields.custom.yellow_color_image | image_url: width: 200, height: 200 }})
+                                      {%- elsif value == 'Blue' -%}
+                                        background-image: url({{ product.metafields.custom.blue_color_image | image_url: width: 200, height: 200 }})
+                                      {%- elsif value == 'Red' -%}
+                                        background-image: url({{ product.metafields.custom.red_color_image | image_url: width: 200, height: 200 }})
                                       {%- endif -%}
                                       {%- endif -%}
                                     "
@@ -263,15 +280,27 @@
   <div class="">
     <div>
       <main>
-        {% for image in product.images %}
-          {{ image | image_url: width: 1024, height: 1024, crop: 'top' | image_tag }}
-        {% endfor %}
+        {% if product.selected_or_first_available_variant.metafields.custom.variant_images.value.size > 0 %}
+          {% for image in product.selected_or_first_available_variant.metafields.custom.variant_images.value %}
+            {{ image | image_url: width: 1024, height: 1024, crop: 'top' | image_tag }}
+          {% endfor %}
+        {% else %}
+          {% for image in product.images %}
+            {{ image | image_url: width: 1024, height: 1024, crop: 'top' | image_tag }}
+          {% endfor %}
+        {% endif %}
       </main>
       <nav>
         <div>
-          {% for image in product.images %}
-            {{ image | image_url: width: 256, height: 256, crop: 'top' | image_tag }}
-          {% endfor %}
+          {% if product.selected_or_first_available_variant.metafields.custom.variant_images.value.size > 0 %}
+            {% for image in product.selected_or_first_available_variant.metafields.custom.variant_images.value %}
+              {{ image | image_url: width: 256, height: 256, crop: 'top' | image_tag }}
+            {% endfor %}
+          {% else %}
+            {% for image in product.images %}
+              {{ image | image_url: width: 256, height: 256, crop: 'top' | image_tag }}
+            {% endfor %}
+          {% endif %}
         </div>
       </nav>
     </div>
