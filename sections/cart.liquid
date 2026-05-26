@@ -121,13 +121,15 @@
                   <div class="text-brand-gray">Subtotal</div>
                   <div class="text-brand-gray font-semibold">{{ cart.items_subtotal_price | money }}</div>
                 </div>
-                <div class="flex justify-between gap-6">
-                  <div class="text-brand-gray">Discount</div>
+                {% if cart.total_discount > 0 %}
+                  <div class="flex justify-between gap-6">
+                    <div class="text-brand-gray">Discount</div>
 
-                  <div class="text-brand-gray font-semibold">
-                    (-{{ discount_perc }}) {{ cart.total_discount | money }}
+                    <div class="text-brand-gray font-semibold">
+                      (-{{ discount_perc }}) {{ cart.total_discount | money }}
+                    </div>
                   </div>
-                </div>
+                {% endif %}
               </div>
               <div class="mb-6">
                 <div class="flex justify-between gap-6">
@@ -135,10 +137,15 @@
                   <div class="font-semibold">{{ cart.total_price | money_with_currency }}</div>
                 </div>
               </div>
-              <div class="flex gap-6 mb-6 relative">
-                <input type="text" class="text-input w-full py-3.5" placeholder="Add promo code">
-                <button class="button medium rounded-lg py-3 absolute top-1 right-1 text-sm cloud">Apply</button>
-              </div>
+              <discount-form>
+                <form class="flex flex-col mb-6 " method="post" action="{{routes.cart_update_url}}">
+                  <div class="flex gap-6 relative">
+                    <input type="text" name="discount" class="text-input w-full py-3.5" placeholder="Add promo code">
+                    <button class="button medium rounded-lg py-3 absolute top-1 right-1 text-sm cloud">Apply</button>
+                  </div>
+                  <div><small class="text-brand-gray-400 my-1"> (Example: 25PC)</small></div>
+                </form>
+              </discount-form>
               <div>
                 <a href="/checkout" class="button medium w-full">Go to Checkout</a>
               </div>

@@ -865,7 +865,7 @@ class ProductCart extends HTMLElement {
   updateCart(event) {
     event.preventDefault();
     const formData = new FormData(this.form);
-    // formData.append('sections', 'cart-drawer')
+    formData.append('sections', 'cart-drawer,cart')
     this.formFieldset.disabled = true;
     fetch(`${window.Shopify.routes.root}cart/update.js`, {
       method: 'POST',
@@ -887,6 +887,10 @@ class ProductCart extends HTMLElement {
           }
         }
         this.updateCartSection();
+        if (data?.sections["cart"]) {
+          updateCartSection(data?.sections["cart"]);
+        }
+
       })
       .catch(err => {
         console.error('Error updating cart:', err);
@@ -1041,3 +1045,72 @@ const updateCartSection = (cartSectionHTML = '') => {
   }
 
 }
+
+class DiscountForm extends HTMLElement {
+  constructor() {
+    super();
+    this.form = this.querySelector('form');
+    this.input = this.form.querySelector('input[name="discount"]');
+    this.errorMessage = this.querySelector('.error-message');
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  connectedCallback() {
+    this.form.addEventListener('submit', this.handleSubmit);
+  }
+
+  disconnectedCallback() {
+    this.form.removeEventListener('submit', this.handleSubmit);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const discountCode = this.input.value.trim();
+    if (discountCode === '') {
+      return;
+    }
+    fetch('/cart/update.js', {
+      method: 'POST',
+      body: JSON.stringify({
+        discount: discountCode,
+        sections: 'cart'
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(data => {
+            throw new Error(data.description || 'Could not apply discount');
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data?.sections["cart"]) {
+          updateCartSection(data?.sections["cart"]);
+        }
+        document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
+          detail: {
+            type: 'success',
+            message: 'Discount applied!',
+          }, bubbles: true
+        }));
+        document.dispatchEvent(new CustomEvent(EVENTS.CART_UPDATED, {
+          bubbles: true
+        }));
+
+      })
+      .catch(err => {
+        console.error('Error applying discount:', err);
+        document.dispatchEvent(new CustomEvent(EVENTS.SHOW_NOTIFICATION, {
+          detail: {
+            type: 'error',
+            message: 'Could not apply discount',
+          }, bubbles: true
+        }));
+      });
+  }
+}
+customElements.define('discount-form', DiscountForm);
