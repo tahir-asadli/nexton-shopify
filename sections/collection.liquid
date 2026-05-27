@@ -148,14 +148,20 @@
           </div>
         </div>
         {% paginate collection.products by 3 %}
-          <div id="collection-products" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {% for product in collection.products %}
-              {% render 'product-card', product: product %}
-            {% endfor %}
-          </div>
-          <div class="pagination">
-            {{- paginate | default_pagination -}}
-          </div>
+          {% if collection.products.size > 0 %}
+            <div id="collection-products" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {% for product in collection.products %}
+                {% render 'product-card', product: product %}
+              {% endfor %}
+            </div>
+            <div class="pagination">
+              {{- paginate | default_pagination -}}
+            </div>
+          {% else %}
+            <div class="py-2">
+              <p class="text-sm text-brand-gray-400 text-center">No products found</p>
+            </div>
+          {% endif %}
         {% endpaginate %}
       </div>
     </div>
