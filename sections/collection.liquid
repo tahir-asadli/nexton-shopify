@@ -5,7 +5,190 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
 {% endcomment %}
 
-<h1>{{ collection.title }}</h1>
+<!-- Collection -->
+<section class="mt-10">
+  <div class="container">
+    <div class="grid lg:grid-cols-[310px_auto] gap-5">
+      <product-filter>
+        <div class="">
+          <div class="hide-scrollbar">
+            <form>
+              <fieldset>
+                {%- for filter in collection.filters -%}
+                  <div class="border-b border-brand-silver mb-6 pb-2">
+                    <h3 class="text-lg mb-6">{{ filter.label }}</h3>
+                    <div class="flex flex-col gap-4 mb-6">
+                      <div class="flex gap-2 items-center">
+                        <input type="checkbox" id="in-stock">
+                        <label
+                          for="in-stock"
+                          class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                          >In stock</label
+                        >
+                      </div>
+                      <div class="flex gap-2 items-center">
+                        <input type="checkbox" id="out-of-stock">
+                        <label
+                          for="out-of-stock"
+                          class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                          >Out of stock</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+                {%- endfor -%}
+                <div class="border-b border-brand-silver mb-6 pb-2">
+                  <h3 class="text-lg mb-6">Availability</h3>
+                  <div class="flex flex-col gap-4 mb-6">
+                    <div class="flex gap-2 items-center">
+                      <input type="checkbox" id="in-stock">
+                      <label
+                        for="in-stock"
+                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                        >In stock</label
+                      >
+                    </div>
+                    <div class="flex gap-2 items-center">
+                      <input type="checkbox" id="out-of-stock">
+                      <label
+                        for="out-of-stock"
+                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                        >Out of stock</label
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="border-b border-brand-silver mb-6 pb-2">
+                  <h3 class="text-lg mb-6">Size</h3>
+                  <div class="flex flex-col gap-4 mb-6">
+                    <div class="flex gap-2 items-center">
+                      <input type="checkbox" id="40mm">
+                      <label
+                        for="40mm"
+                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                        >40mm</label
+                      >
+                    </div>
+                    <div class="flex gap-2 items-center">
+                      <input type="checkbox" id="34mm">
+                      <label
+                        for="34mm"
+                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                        >34mm</label
+                      >
+                    </div>
+                    <div class="flex gap-2 items-center">
+                      <input type="checkbox" id="43mm">
+                      <label
+                        for="43mm"
+                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                        >43mm</label
+                      >
+                    </div>
+                    <div class="flex gap-2 items-center">
+                      <input type="checkbox" id="44mm">
+                      <label
+                        for="44mm"
+                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                        >44mm</label
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-6 pb-2">
+                  <h3 class="text-lg mb-2">Price</h3>
+                  <price-slider>
+                    <div data-slider data-min="1" data-max="10000" data-min-value="1" data-max-value="10000"></div>
+                    <div class="flex gap-6 items-center mt-2">
+                      <div class="flex flex-col gap-2 w-full">
+                        <div class="text-brand-gray">Min Price</div>
+                        <div class="flex w-full relative">
+                          <input
+                            type="number"
+                            class="text-input rounded-full w-full pr-7"
+                            price-min
+                            min="1"
+                            max="10000"
+                            value="1"
+                            name="min-value"
+                          >
+                          <span class="absolute right-3 top-2.5 font-semibold text-brand-gray">$</span>
+                        </div>
+                      </div>
+                      <div class="flex flex-col gap-2 w-full">
+                        <div class="text-brand-gray">Max Price</div>
+                        <div class="flex w-full relative">
+                          <input
+                            type="number"
+                            class="text-input rounded-full w-full pr-7"
+                            price-max
+                            min="1"
+                            max="10000"
+                            value="10000"
+                            name="max-value"
+                          >
+                          <span class="absolute right-3 top-2.5 font-semibold text-brand-gray">$</span>
+                        </div>
+                      </div>
+                    </div>
+                  </price-slider>
+                </div>
+                <div class="flex justify-center w-full lg:hidden">
+                  <button class="button medium close-product-filter" type="button">Close</button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </product-filter>
+      <div>
+        <h1 class="h2">{{ collection.title }}</h1>
+        <div class="flex justify-between items-center gap-4 py-2 mb-2">
+          <div class="hidden lg:block text-sm text-brand-gray">
+            <div>
+              Showing
+              {{ collection.products_count }}
+              of {{ collection.all_products_count }} Products
+            </div>
+          </div>
+          <button class="button cloud px-3 bg-white text-brand-gray lg:hidden open-product-filter">
+            <span class="[&_svg]:size-2.5">
+              {{ 'icons/filter.svg' | inline_asset_content }}
+            </span>
+            <span>Filters</span>
+          </button>
+          <div class="flex justify-end items-center gap-4 text-sm text-brand-gray">
+            <div class="flex gap-2 items-center">
+              <span class="hidden sm:block">Sort by:</span>
+              <select name="sort" class="sort select sort ml-auto lg:ml-0">
+                {% for option in collection.sort_options %}
+                  <option
+                    value="{{ option.value }}"
+                    {% if option.value == collection.sort_by %}
+                      selected
+                    {% endif %}
+                  >
+                    {{ option.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        {% paginate collection.products by 3 %}
+          <div id="collection-products" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {% for product in collection.products %}
+              {% render 'product-card', product: product %}
+            {% endfor %}
+          </div>
+          <div class="pagination">
+            {{- paginate | default_pagination -}}
+          </div>
+        {% endpaginate %}
+      </div>
+    </div>
+  </div>
+</section>
 
 <div class="collection-products">
   {% paginate collection.products by 20 %}

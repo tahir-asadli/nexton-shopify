@@ -137,7 +137,7 @@
                           <div class="font-semibold mb-2">{{ option.name }}</div>
                           <div class="flex flex-wrap gap-2">
                             {% for value in option.values %}
-                              {% if option.name == 'Color' %}
+                              {% if option.name == 'Color' or option.name == 'Band color' %}
                                 <div class="radio-button image">
                                   <input
                                     data-variant-input
@@ -165,6 +165,10 @@
                                         background-image: url({{ product.metafields.custom.blue_color_image | image_url: width: 200, height: 200 }})
                                       {%- elsif value == 'Red' -%}
                                         background-image: url({{ product.metafields.custom.red_color_image | image_url: width: 200, height: 200 }})
+                                      {%- elsif value == 'White' -%}
+                                        background-image: url({{ product.metafields.custom.white_color_image | image_url: width: 200, height: 200 }})
+                                      {%- elsif value == 'Orange' -%}
+                                        background-image: url({{ product.metafields.custom.orange_color_image | image_url: width: 200, height: 200 }})
                                       {%- endif -%}
                                       {%- endif -%}
                                     "
