@@ -9,7 +9,7 @@
 <section class="mt-10">
   <div class="container">
     <div class="grid lg:grid-cols-[310px_auto] gap-5">
-      <product-filter>
+      <product-filter data-collection-handle="{{ collection.handle }}" data-section-id="{{ section.id }}">
         <div class="">
           <div class="hide-scrollbar">
             <form>
@@ -18,121 +18,93 @@
                   <div class="border-b border-brand-silver mb-6 pb-2">
                     <h3 class="text-lg mb-6">{{ filter.label }}</h3>
                     <div class="flex flex-col gap-4 mb-6">
-                      <div class="flex gap-2 items-center">
-                        <input type="checkbox" id="in-stock">
-                        <label
-                          for="in-stock"
-                          class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
-                          >In stock</label
-                        >
-                      </div>
-                      <div class="flex gap-2 items-center">
-                        <input type="checkbox" id="out-of-stock">
-                        <label
-                          for="out-of-stock"
-                          class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
-                          >Out of stock</label
-                        >
-                      </div>
+                      {% if filter.type == 'list' or filter.type == 'boolean' %}
+                        {% for value in filter.values %}
+                          <div class="flex gap-2 items-center">
+                            <input
+                              class="filter-input"
+                              type="checkbox"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              {% if value.active %}
+                                checked
+                              {% endif %}
+                              id="filter-{{ filter.label|handleize }}-{{ value.label|handleize }}"
+                            >
+                            <label
+                              for="filter-{{ filter.label|handleize }}-{{ value.label|handleize }}"
+                              class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
+                            >
+                              {{- value.label -}}
+                            </label>
+                          </div>
+                        {% endfor %}
+                      {% elsif filter.type == 'price_range' %}
+                        <price-slider>
+                          <div
+                            data-slider
+                            data-min="{{ filter.range_min | divided_by: 100 }}"
+                            data-max="{{ filter.range_max | divided_by: 100 }}"
+                            data-min-value="
+                              {%- if filter.min_value.value -%}
+                                {{- filter.min_value.value | divided_by: 100 -}}
+                              {%- else -%}
+                                0
+                              {%- endif -%}
+                            "
+                            data-max-value="
+                              {%- if filter.max_value.value -%}
+                                {{- filter.max_value.value | divided_by: 100 -}}
+                              {%- else -%}
+                                {{-filter.range_max | divided_by: 100-}}
+                              {%- endif -%}
+                            "
+                          ></div>
+                          <div class="flex gap-6 items-center mt-2">
+                            <div class="flex flex-col gap-2 w-full">
+                              <div class="text-brand-gray">Min Price</div>
+                              <div class="flex w-full relative">
+                                <input
+                                  type="number"
+                                  class="filter-input text-input rounded-full w-full pr-7"
+                                  price-min
+                                  min="{{ filter.range_min | divided_by: 100 }}"
+                                  max="{{ filter.range_max | divided_by: 100 }}"
+                                  {% if filter.min_value.value %}
+                                    value="{{ filter.min_value.value | divided_by: 100 }}"
+                                  {% else %}
+                                    value="0"
+                                  {% endif %}
+                                  name="{{ filter.min_value.param_name }}"
+                                >
+                                <span class="absolute right-3 top-2.5 font-semibold text-brand-gray">$</span>
+                              </div>
+                            </div>
+                            <div class="flex flex-col gap-2 w-full">
+                              <div class="text-brand-gray">Max Price</div>
+                              <div class="flex w-full relative">
+                                <input
+                                  type="number"
+                                  class="filter-input text-input rounded-full w-full pr-7"
+                                  price-max
+                                  min="{{ filter.range_min | divided_by: 100 }}"
+                                  max="{{ filter.range_max | divided_by: 100 }}"
+                                  name="{{ filter.max_value.param_name }}"
+                                  {% if filter.max_value.value %}
+                                    value="{{ filter.max_value.value | divided_by: 100 }}"
+                                  {% else %}
+                                    value="{{ filter.range_max | divided_by: 100 }}"
+                                  {% endif %}
+                                >
+                                <span class="absolute right-3 top-2.5 font-semibold text-brand-gray">$</span>
+                              </div>
+                            </div>
+                          </div>
+                        </price-slider>
+                      {% endif %}
                     </div>
                   </div>
                 {%- endfor -%}
-                <div class="border-b border-brand-silver mb-6 pb-2">
-                  <h3 class="text-lg mb-6">Availability</h3>
-                  <div class="flex flex-col gap-4 mb-6">
-                    <div class="flex gap-2 items-center">
-                      <input type="checkbox" id="in-stock">
-                      <label
-                        for="in-stock"
-                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
-                        >In stock</label
-                      >
-                    </div>
-                    <div class="flex gap-2 items-center">
-                      <input type="checkbox" id="out-of-stock">
-                      <label
-                        for="out-of-stock"
-                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
-                        >Out of stock</label
-                      >
-                    </div>
-                  </div>
-                </div>
-                <div class="border-b border-brand-silver mb-6 pb-2">
-                  <h3 class="text-lg mb-6">Size</h3>
-                  <div class="flex flex-col gap-4 mb-6">
-                    <div class="flex gap-2 items-center">
-                      <input type="checkbox" id="40mm">
-                      <label
-                        for="40mm"
-                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
-                        >40mm</label
-                      >
-                    </div>
-                    <div class="flex gap-2 items-center">
-                      <input type="checkbox" id="34mm">
-                      <label
-                        for="34mm"
-                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
-                        >34mm</label
-                      >
-                    </div>
-                    <div class="flex gap-2 items-center">
-                      <input type="checkbox" id="43mm">
-                      <label
-                        for="43mm"
-                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
-                        >43mm</label
-                      >
-                    </div>
-                    <div class="flex gap-2 items-center">
-                      <input type="checkbox" id="44mm">
-                      <label
-                        for="44mm"
-                        class="text-sm text-brand-gray font-normal leading-none m-0 cursor-pointer block"
-                        >44mm</label
-                      >
-                    </div>
-                  </div>
-                </div>
-                <div class="mb-6 pb-2">
-                  <h3 class="text-lg mb-2">Price</h3>
-                  <price-slider>
-                    <div data-slider data-min="1" data-max="10000" data-min-value="1" data-max-value="10000"></div>
-                    <div class="flex gap-6 items-center mt-2">
-                      <div class="flex flex-col gap-2 w-full">
-                        <div class="text-brand-gray">Min Price</div>
-                        <div class="flex w-full relative">
-                          <input
-                            type="number"
-                            class="text-input rounded-full w-full pr-7"
-                            price-min
-                            min="1"
-                            max="10000"
-                            value="1"
-                            name="min-value"
-                          >
-                          <span class="absolute right-3 top-2.5 font-semibold text-brand-gray">$</span>
-                        </div>
-                      </div>
-                      <div class="flex flex-col gap-2 w-full">
-                        <div class="text-brand-gray">Max Price</div>
-                        <div class="flex w-full relative">
-                          <input
-                            type="number"
-                            class="text-input rounded-full w-full pr-7"
-                            price-max
-                            min="1"
-                            max="10000"
-                            value="10000"
-                            name="max-value"
-                          >
-                          <span class="absolute right-3 top-2.5 font-semibold text-brand-gray">$</span>
-                        </div>
-                      </div>
-                    </div>
-                  </price-slider>
-                </div>
                 <div class="flex justify-center w-full lg:hidden">
                   <button class="button medium close-product-filter" type="button">Close</button>
                 </div>
@@ -189,38 +161,6 @@
     </div>
   </div>
 </section>
-
-<div class="collection-products">
-  {% paginate collection.products by 20 %}
-    {% for product in collection.products %}
-      <div class="collection-product">
-        {% if product.featured_image %}
-          {% render 'image',
-            class: 'collection-product__image',
-            image: product.featured_image,
-            url: product.url,
-            width: 400,
-            height: 400,
-            crop: 'center'
-          %}
-        {% endif %}
-        <div class="collection-product__content">
-          <p>{{ product.title | escape | link_to: product.url }}</p>
-          <p>{{ product.price | money }}</p>
-        </div>
-      </div>
-    {% endfor %}
-
-    {{ paginate | default_pagination }}
-  {% endpaginate %}
-</div>
-
-{% stylesheet %}
-  .collection-products {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-  }
-{% endstylesheet %}
 
 {% schema %}
 {

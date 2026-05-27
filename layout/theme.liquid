@@ -19,9 +19,11 @@
     {% # Load and preload the critical CSS %}
     {{ 'splide.min.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'tailwind.css' | asset_url | stylesheet_tag: preload: true }}
-    {% comment %} {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }} {% endcomment %}
+    {{ 'range-slider.css' | asset_url | stylesheet_tag: preload: true }}
 
     <script src="{{ 'splide.min.js' | asset_url }}" defer="defer"></script>
+
+    <script src="{{ 'range-slider.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'gsap.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'components.js' | asset_url }}" defer="defer"></script>
     {% # Social, title, etc. %}

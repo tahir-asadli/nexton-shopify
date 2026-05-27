@@ -1100,6 +1100,305 @@ class DiscountForm extends HTMLElement {
 
 customElements.define('discount-form', DiscountForm);
 
+class PriceSlider extends HTMLElement {
+  constructor() {
+    super();
+    this.sliderEl = this.querySelector('[data-slider]');
+    this.priceMinEl = this.querySelector('[price-min]');
+    this.priceMaxEl = this.querySelector('[price-max]');
+    this.min = this.sliderEl.dataset.min ? Number(this.sliderEl.dataset.min) : 1
+    this.max = this.sliderEl.dataset.max ? Number(this.sliderEl.dataset.max) : 100
+    this.minValue = this.sliderEl.dataset.minValue ? Number(this.sliderEl.dataset.minValue) : undefined;
+    this.maxValue = this.sliderEl.dataset.maxValue ? Number(this.sliderEl.dataset.maxValue) : undefined;
+    this.slider = null;
+
+  }
+  connectedCallback() {
+    if (this.sliderEl) {
+      this.slider = createRangeSlider(this.sliderEl, {
+        min: this.min,
+        max: this.max,
+        step: 1,
+        minValue: this.minValue,
+        maxValue: this.maxValue,
+        labelPrefix: '',
+        labelSuffix: '',
+        label: false,
+      });
+      this.slider.sliderElement.addEventListener('rangeChange', (e) => {
+        console.log('price', e);
+
+        if (this.priceMinEl) {
+          this.priceMinEl.value = e.detail.min;
+          this.priceMaxEl.value = e.detail.max;
+          this.priceMinEl.dispatchEvent(new Event('change', { bubbles: true }));
+          this.priceMaxEl.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      this.slider.sliderElement.addEventListener('rangeChanging', (e) => {
+        if (this.priceMinEl) {
+          this.priceMinEl.value = e.detail.min;
+          this.priceMaxEl.value = e.detail.max;
+        }
+      });
+    }
+    if (this.priceMaxEl) {
+      this.priceMaxEl.addEventListener('change', () => {
+        this.slider.update(this.priceMinEl.value,
+          this.priceMaxEl.value);
+      })
+    }
+    if (this.priceMinEl) {
+      this.priceMinEl.addEventListener('change', () => {
+        this.slider.update(this.priceMinEl.value,
+          this.priceMaxEl.value)
+      })
+    }
+  }
+
+  disconnectedCallback() {
+  }
+}
+
+customElements.define('price-slider', PriceSlider);
+
+
+class ProductFilter extends HTMLElement {
+  constructor() {
+    super();
+    this.open = this.open.bind(this)
+    this.close = this.close.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.handleFilterChange = this.handleFilterChange.bind(this)
+    this.timeoutId = null;
+    // this.filterAccordions = this.querySelectorAll('filter-accordion');
+    // this.formNotReady = false;
+  }
+
+  handleFilterChange(e) {
+    this.sectionId = this.dataset.sectionId;
+    // if (this.formNotReady) return;
+    const url = this.generateUrl();
+
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+    this.timeoutId = setTimeout(() => {
+      if (this.formNotReady) return;
+      this.fieldset.disabled = true;
+
+      this.fetchProducts(url.toString());
+    }, 1000);
+  }
+
+  generateUrl() {
+    const params = {};
+    this.filterInputs.forEach(input => {
+      if (input.type == 'checkbox') {
+        if (input.checked) {
+          if (!params[input.name]) {
+            params[input.name] = [];
+          }
+          params[input.name].push(input.value);
+        }
+      } else {
+        if (!params[input.name]) {
+          params[input.name] = [];
+        }
+        params[input.name].push(input.value);
+      }
+    });
+
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set('section_id', this.sectionId);
+    Object.keys(params).forEach(key => {
+      params[key].forEach(value => {
+        url.searchParams.append(key, value);
+      });
+    });
+    return url.toString();
+  }
+
+  connectedCallback() {
+    document.addEventListener('click', this.handleClick)
+    this.filterInputs = this.querySelectorAll('.filter-input');
+    this.filterInputs?.forEach((filterInput) => {
+      filterInput.addEventListener('change', this.handleFilterChange);
+    })
+    // this.sectionId = this.dataset.sectionId;
+    // this.sortEl = this.querySelector('.sort');
+    this.fieldset = this.querySelector('fieldset');
+    // this.filterInputs = this.querySelectorAll('input[type="checkbox"]');
+    // this.rangeFilterInputs = this.querySelectorAll('input[type="range"]');
+    // this.activeFilters = this.querySelectorAll('.active-filters button');
+    // this.paginationLinks = this.querySelectorAll('.pagination a');
+    // this.handleFilterChange = this.handleFilterChange.bind(this);
+    // this.handleSearchState = this.handleSearchState.bind(this);
+    // this.removeFilter = this.removeFilter.bind(this);
+    // this.generateUrl = this.generateUrl.bind(this);
+    // this.handlePaginationClick = this.handlePaginationClick.bind(this);
+    // this.handleSortChange = this.handleSortChange.bind(this);
+    // this.timeoutId = null;
+
+    // this.activeFilters.forEach(button => {
+    //   button.addEventListener('click', this.removeFilter);
+    // });
+    // this.paginationLinks.forEach(link => {
+    //   link.addEventListener('click', this.handlePaginationClick);
+    // });
+
+    // this.filterInputs.forEach(input => {
+    //   input.addEventListener('change', this.handleFilterChange);
+    // });
+    // this.rangeFilterInputs.forEach(input => {
+    //   input.addEventListener('change', this.handleFilterChange);
+    // });
+    // this.addEventListener('mousedown', () => this.handleSearchState(true));
+    // this.addEventListener('mouseup', () => this.handleSearchState(false));
+
+    // this.sortEl.addEventListener('change', this.handleSortChange);
+
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('click', this.handleClick)
+    this.filterInputs = this.querySelectorAll('.filter-input');
+    this.filterInputs?.forEach((filterInput) => {
+      filterInput.addEventListener('change', this.handleFilterChange);
+    })
+    // this.filterInputs.forEach(input => {
+    //   input.removeEventListener('change', this.handleFilterChange);
+    // });
+    // this.rangeFilterInputs.forEach(input => {
+    //   input.removeEventListener('change', this.handleFilterChange);
+    // });
+    // this.activeFilters.forEach(button => {
+    //   button.removeEventListener('click', this.removeFilter);
+    // });
+    // this.removeEventListener('mousedown', () => this.handleSearchState(true));
+    // this.removeEventListener('mouseup', () => this.handleSearchState(false));
+    // this.paginationLinks.forEach(link => {
+    //   link.removeEventListener('click', this.handlePaginationClick);
+    // });
+  }
+
+  handleClick(event) {
+    if (event.target.closest('.open-product-filter') && !document.documentElement.classList.add('product-filter-open')) {
+      this.open();
+    } else if (event.target.closest('.close-product-filter') && !document.documentElement.classList.add('product-filter-open')) {
+      this.close();
+    } else if (event.target.closest('product-filter') == event.target.parentNode) {
+      this.close();
+    }
+  }
+  open() {
+    document.documentElement.classList.add('product-filter-open');
+  }
+  close() {
+    document.documentElement.classList.remove('product-filter-open');
+  }
+
+  handleSortChange(event) {
+    // const url = new URL(window.location.href);
+    // url.searchParams.set('sort_by', event.currentTarget.value);
+    // url.searchParams.set('section_id', this.sectionId);
+    // this.fetchProducts(url);
+    // url.searchParams.delete('section_id');
+    // window.history.replaceState({}, '', url);
+  }
+
+  removeFilter(event) {
+    // const button = event.currentTarget;
+    // const dataRemoveURL = button.dataset.removeUrl;
+    // if (dataRemoveURL) {
+    //   this.fieldset.disabled = true;
+    //   const newUrl = new URL(dataRemoveURL, window.location.origin);
+    //   newUrl.searchParams.set('section_id', this.sectionId);
+    //   this.fetchProducts(newUrl);
+    //   newUrl.searchParams.delete('section_id');
+    //   window.history.replaceState({}, '', newUrl);
+    // }
+
+  }
+
+  handlePaginationClick(event) {
+    // event.preventDefault();
+    // const link = event.currentTarget;
+    // const newUrl = new URL(link.href);
+    // newUrl.searchParams.set('section_id', this.sectionId);
+    // this.fetchProducts(newUrl);
+    // newUrl.searchParams.delete('section_id');
+    // window.history.replaceState({}, '', newUrl);
+  }
+
+  handleSearchState(formState) {
+    // this.formNotReady = formState;
+  }
+
+  // generateUrl() {
+  //   // const params = {};
+  //   // this.filterInputs.forEach(input => {
+  //   //   if (input.checked) {
+  //   //     if (!params[input.name]) {
+  //   //       params[input.name] = [];
+  //   //     }
+  //   //     params[input.name].push(input.value);
+  //   //   }
+  //   // });
+  //   // this.rangeFilterInputs.forEach(input => {
+  //   //   if (input.value) {
+  //   //     if (!params[input.name]) {
+  //   //       params[input.name] = [];
+  //   //     }
+  //   //     params[input.name].push(input.value);
+  //   //   }
+  //   // });
+  //   // const url = new URL(window.location.origin + window.location.pathname);
+  //   // url.searchParams.set('section_id', this.sectionId);
+  //   // Object.keys(params).forEach(key => {
+  //   //   params[key].forEach(value => {
+  //   //     url.searchParams.append(key, value);
+  //   //   });
+  //   // });
+  //   // return url.toString();
+  // }
+
+  // handleFilterChange(event) {
+  // if (this.formNotReady) return;
+  // const url = this.generateUrl();
+  // if (this.timeoutId) {
+  //   clearTimeout(this.timeoutId);
+  // }
+  // this.timeoutId = setTimeout(() => {
+  //   if (this.formNotReady) return;
+  //   this.fieldset.disabled = true;
+
+  //   this.fetchProducts(url.toString());
+  // }, 1000);
+  // }
+
+  fetchProducts(url) {
+    fetch(url)
+      .then(response => response.text())
+      .then(html => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const newSection = tempDiv.querySelector(`#shopify-section-${this.sectionId}`);
+        const currentSection = document.querySelector(`#shopify-section-${this.sectionId}`);
+        if (newSection && currentSection) {
+          currentSection.replaceWith(newSection);
+          const newUrl = new URL(url);
+          newUrl.searchParams.delete('section_id');
+          window.history.replaceState({}, '', newUrl);
+        }
+      })
+      .catch(error => console.error('Error fetching filter results:', error)).finally(() => {
+        this.fieldset.disabled = false;
+      });
+  }
+
+}
+customElements.define('product-filter', ProductFilter);
 
 const updateCartSection = (cartSectionHTML = '') => {
   if (!cartSectionHTML) {
