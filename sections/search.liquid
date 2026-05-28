@@ -25,7 +25,7 @@
     <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
 
     <div class="search-results">
-      {% paginate search.results by 20 %}
+      {% paginate search.results by 12 %}
         {% # Search result items may be an article, a page, or a product. %}
         {% for result in search.results %}
           <div class="search-result">

@@ -21,7 +21,7 @@
   <h2>{{ 'blog.article_comments' | t }}</h2>
 
   <div id="comments">
-    {% paginate article.comments by 10 %}
+    {% paginate article.comments by 12 %}
       {% for comment in article.comments %}
         <div>
           <p>{{ comment.author }}</p>

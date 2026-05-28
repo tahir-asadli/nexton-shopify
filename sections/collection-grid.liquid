@@ -13,7 +13,7 @@
     </div>
     {% if section.settings.collection != blank %}
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
-        {% paginate section.settings.collection.products by 20 %}
+        {% paginate section.settings.collection.products by 12 %}
           {% for product in section.settings.collection.products %}
             {% render 'product-card', product: product %}
           {% endfor %}
