@@ -13,15 +13,37 @@
       "type": "product",
       "settings": {}
     },
-    "best_sellers_KhnbRE": {
+    "collection_grid_eTxxKL": {
       "type": "collection-grid",
       "name": "Collection grid",
       "settings": {
-        "title": "Klok",
-        "subtitle": "",
-        "collection": "klokers"
+        "title": "Undone Watches.",
+        "subtitle": "Affordable watches",
+        "collection": "undone"
       }
+    },
+    "banner_mbxiqh": {
+      "type": "banner",
+      "blocks": {
+        "banner_collection_xNP9Wt": {
+          "type": "_banner-collection",
+          "name": "Banner Collection",
+          "settings": {
+            "collection": "undone"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "banner_collection_xNP9Wt"
+      ],
+      "name": "Banner",
+      "settings": {}
     }
   },
-  "order": ["main", "best_sellers_KhnbRE"]
+  "order": [
+    "main",
+    "collection_grid_eTxxKL",
+    "banner_mbxiqh"
+  ]
 }
