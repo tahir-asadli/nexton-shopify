@@ -1303,6 +1303,50 @@ class ProductFilter extends HTMLElement {
 
 customElements.define('product-filter', ProductFilter);
 
+class CollectionSlider extends HTMLElement {
+  constructor() {
+    super();
+    this.sliderEl = this.querySelector('.splide-explore');
+    this.splide = null;
+    this.initSlider = this.initSlider.bind(this);
+  }
+
+  connectedCallback() {
+    this.initSlider();
+  }
+
+  disconnectedCallback() {
+    if (!this.splide) return;
+    this.splide.destroy();
+  }
+
+  initSlider() {
+    if (!this.sliderEl) return;
+    this.splide = new Splide(this.sliderEl, {
+      type: 'loop',
+      perPage: 3,
+      perMove: 1,
+      pagination: true,
+      arrows: false,
+      autoplay: true,
+      interval: 20000,
+      speed: 2000,
+      gap: 20,
+      breakpoints: {
+        1024: {
+          perPage: 1,
+        },
+        1280: {
+          perPage: 2,
+        },
+      }
+    }).mount();
+
+  }
+}
+
+customElements.define('collection-slider', CollectionSlider)
+
 const updateCartSection = (cartSectionHTML = '') => {
   if (!cartSectionHTML) {
     return;

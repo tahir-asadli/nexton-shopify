@@ -1,0 +1,87 @@
+<!-- Collection slider -->
+<collection-slider>
+  <section class="mb-10">
+    <div class="container">
+      <div class="mb-10">
+        {% if section.settings.title or section.settings.subtitle %}
+          <h2>
+            {% if section.settings.title %}
+              {% if section.settings.title_link %}
+                <a href="{{section.settings.title_link}}" class="underline">{{ section.settings.title }}</a>
+              {% else %}
+                <span class="underline">{{ section.settings.title }}</span>
+              {% endif %}
+            {% endif %}
+            {% if section.settings.subtitle %}
+              <span class="text-brand-gray-400">{{ section.settings.subtitle }}</span>
+            {% endif %}
+          </h2>
+        {% endif %}
+      </div>
+      <div class="splide splide-explore">
+        <div class="splide__track py-1">
+          <div class="splide__list">
+            {% for selected_collection in section.settings.collections %}
+              {% assign prices = selected_collection.products | map: 'price_min' %}
+              {% assign lowest_price = prices | sort | first %}
+
+              <div class="splide__slide">
+                <div class="p-10 border border-brand-silver rounded-2xl flex items-center justify-between">
+                  <div>
+                    <h3 class="">{{ selected_collection.title }}</h3>
+                    <p class="text-xs text-brand-gray">Starting at {{ lowest_price | money }}</p>
+                  </div>
+                  <div>
+                    <a
+                      href="{{ selected_collection.url }}"
+                      class="uppercase text-sm text-brand-gray inline-flex items-center justify-baseline gap-2 border-l-3 border-brand-silver py-2 pl-3"
+                    >
+                      <span>Shop Now</span>
+                      <span class="[&_svg:size-4]">
+                        {{ 'icons/arrow-right.svg' | inline_asset_content }}
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <ul class="splide__pagination static! mt-6!"></ul>
+      </div>
+    </div>
+  </section>
+</collection-slider>
+
+{% schema %}
+{
+  "name": "Collection slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "url",
+      "id": "title_link",
+      "label": "Title link"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sub title"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections",
+      "label": "Collections"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection slider"
+    }
+  ]
+}
+{% endschema %}
