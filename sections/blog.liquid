@@ -18,22 +18,48 @@
     {% endcomment %}
     <div>
       {% paginate blog.articles by 2 %}
-        <div id="collection-products" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
           {% for article in blog.articles %}
-            <div>
-              {% if article.image %}
-                {{ article.image | image_url: width: 1000 | image_tag }}
+            <div class="relative border border-brand-silver-400 rounded-2xl overflow-clip group">
+              {%- if article.image %}
+                <a href="{{ article.url }}">
+                  <img
+                    src="{{ article.image | image_url: width: 340, height: 300, crop: 'center' }}"
+                    alt="Article image"
+                    width="340"
+                    height="300"
+                  >
+                </a>
               {% endif %}
-              <h2>
-                {{ article.title | link_to: article.url }}
-              </h2>
-              {% assign date = article.published_at | time_tag: format: 'date' %}
-              <p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
-              <p>{{ article.excerpt }}</p>
+              <div
+                class="absolute inset-0 w-full h-full bg-black/40 opacity-0 group-hover:opacity-100 transition-all pointer-events-none"
+              ></div>
+              <div class="w-full flex flex-col gap-2 absolute -bottom-full transition-all group-hover:bottom-0 z-1 p-4 text-white">
+                <h5>
+                  <a href="{{ article.url }}">{{ article.title }}</a>
+                </h5>
+                {% if article.excerpt %}
+                  <p class="text-sm">{{ article.excerpt | strip_html | truncatewords: 15 }}</p>
+                {% endif %}
+                {% assign date = article.published_at | time_tag: format: 'date' %}
+                <p class="text-xs">{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+              </div>
             </div>
+            {% comment %}
+              <div>
+                {% if article.image %}
+                  {{ article.image | image_url: width: 1000 | image_tag }}
+                {% endif %}
+                <h2>
+                  {{ article.title | link_to: article.url }}
+                </h2>
+                {% assign date = article.published_at | time_tag: format: 'date' %}
+                <p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+                <p>{{ article.excerpt }}</p>
+              </div>
+            {% endcomment %}
           {% endfor %}
         </div>
-
         {%- if paginate.pages > 1 -%}
           <div class="pagination">
             {{- paginate | default_pagination -}}

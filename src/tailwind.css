@@ -6,7 +6,6 @@
 @source "../layout/**/*.liquid";
 @source "../config/*.json";
 @custom-variant hover (&:hover);
-
 /* Column spans */
 @source inline("col-span-{1..30}");
 @source inline("sm:col-span-{1..30}");
@@ -390,6 +389,18 @@
   }
   .pagination span:not(.current) a {
     @apply inline-flex  text-brand-gray rounded-xl px-3 py-1 hover:bg-gray-100 cursor-pointer;
+  }
+
+  .html-content {
+    margin: 20px 0;
+  }
+
+  .html-content img {
+    width: 100%;
+  }
+
+  .comment-form {
+    margin: 20px 0;
   }
 }
 /* Jump animation */

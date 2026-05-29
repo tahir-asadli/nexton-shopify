@@ -11,55 +11,73 @@
     <h1 class="h2 mb-3">{{ article.title }}</h1>
 
     {% if article.image %}
-      {{ article.image | image_url: width: 1000 | image_tag }}
+      {{
+        article.image
+        | image_url: width: 1200, crop: 'top'
+        | image_tag: class: 'w-full h-100 my-4 object-cover rounded-lg object-top'
+      }}
     {% endif %}
 
     {% assign date = article.published_at | time_tag: format: 'date' %}
-    <p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+    <p class="py-2 font-bold text-gray-600">
+      {{ 'blog.article_metadata_html' | t: date: date, author: article.author }}
+    </p>
 
-    {{ article.content }}
+    <div class="flex flex-col gap-4 html-content">
+      {{ article.content }}
+    </div>
 
     {% if blog.comments_enabled? %}
-      <h2>{{ 'blog.article_comments' | t }}</h2>
+      <div class="comment-form">
+        <h3>{{ 'blog.article_comments' | t }}</h3>
 
-      <div id="comments">
-        {% paginate article.comments by 1 %}
-          {% for comment in article.comments %}
-            <div>
-              <p>{{ comment.author }}</p>
-              <p>
-                {{- comment.created_at | time_tag: format: 'date' -}}
-              </p>
-              <p>{{ comment.content }}</p>
-            </div>
-          {% endfor %}
+        <div class="flex flex-col gap-2 mt-2" id="comments">
+          {% paginate article.comments by 3 %}
+            {% for comment in article.comments %}
+              <div class="group">
+                <p class="text-brand-blue-600">{{ comment.author }}</p>
+                <p class="text-xs text-brand-gray-400">
+                  {{- comment.created_at | time_tag: format: 'date' -}}
+                </p>
+                <div class="text-sm text-brand-gray-600 mt-2 pb-2 border-b border-brand-silver-400  {% if forloop.last -%} border-b-0 {%-endif-%}">
+                  {{ comment.content }}
+                </div>
+              </div>
+            {% endfor %}
 
-          {{ paginate | default_pagination: anchor: 'comments' }}
-        {% endpaginate %}
+            {%- if paginate.pages > 1 -%}
+              <div class="pagination">
+                {{ paginate | default_pagination: anchor: 'comments' }}
+              </div>
+            {%- endif -%}
+          {% endpaginate %}
+        </div>
+
+        {% form 'new_comment', article %}
+          <h4 class="text-brand-gray mb-2">{{ 'blog.comment_form_title' | t }}</h4>
+
+          {{ form.errors | default_errors }}
+
+          <div class="flex flex-col gap-2 mb-2">
+            <label for="author">{{ 'blog.comment_form_name' | t }}</label>
+            <input class="text-input" type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
+          </div>
+
+          <div class="flex flex-col gap-2 mb-2">
+            <label for="email">{{ 'blog.comment_form_email' | t }}</label>
+            <input class="text-input" type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
+          </div>
+
+          <div class="flex flex-col gap-2 mb-2">
+            <label for="body">{{ 'blog.comment_form_body' | t }}</label>
+            <textarea class="text-input" name="comment[body]" id="body" required>{{ form.body }}</textarea>
+          </div>
+
+          <div class="flex justify-end py-2">
+            <input class="button medium cloud" type="submit" value="{{ 'blog.comment_form_submit' | t }}">
+          </div>
+        {% endform %}
       </div>
-
-      {% form 'new_comment', article %}
-        <h2>{{ 'blog.comment_form_title' | t }}</h2>
-
-        {{ form.errors | default_errors }}
-
-        <div>
-          <label for="author">{{ 'blog.comment_form_name' | t }}</label>
-          <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
-        </div>
-
-        <div>
-          <label for="email">{{ 'blog.comment_form_email' | t }}</label>
-          <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
-        </div>
-
-        <div>
-          <label for="body">{{ 'blog.comment_form_body' | t }}</label>
-          <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
-        </div>
-
-        <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
-      {% endform %}
     {% endif %}
   </div>
 </section>

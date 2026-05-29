@@ -5,23 +5,25 @@
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
       {% for collection in collections %}
         <div class="relative border border-brand-silver-400 rounded-2xl overflow-clip group">
-          <a class="collection-card" href="{{ collection.url }}">
-            {%- if collection.featured_image %}
+          {%- if collection.featured_image %}
+            <a href="{{ collection.url }}">
               <img
-                src="{{ collection.featured_image | image_url: width: 300, height: 340, crop: 'top' }}"
+                src="{{ collection.featured_image | image_url: width: 340, height: 300, crop: 'center' }}"
                 alt="Product image"
                 width="300"
                 height="340"
               >
-            {% endif %}
-          </a>
+            </a>
+          {% endif %}
           <div
             class="absolute inset-0 w-full h-full bg-black/40 opacity-0 group-hover:opacity-100 transition-all pointer-events-none"
           ></div>
           <div class="w-full flex flex-col gap-2 absolute -bottom-full transition-all group-hover:bottom-0 z-1 p-4 text-white">
-            <h5>{{ collection.title }}</h5>
+            <h5>
+              <a href="{{ collection.url }}">{{ collection.title }}</a>
+            </h5>
             {% if collection.description %}
-              <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
+              <p class="text-sm">{{ collection.description | strip_html | truncatewords: 15 }}</p>
             {% endif %}
           </div>
         </div>
