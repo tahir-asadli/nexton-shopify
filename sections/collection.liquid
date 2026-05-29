@@ -8,6 +8,8 @@
 <!-- Collection -->
 <section class="mt-10">
   <div class="container">
+    {% render 'breadcrumb' %}
+    <h1 class="h2 mb-3">{{ collection.title }}</h1>
     <div class="grid lg:grid-cols-[310px_auto] gap-5">
       <product-filter data-collection-handle="{{ collection.handle }}" data-section-id="{{ section.id }}">
         <div class="">
@@ -114,7 +116,6 @@
         </div>
       </product-filter>
       <div>
-        <h1 class="h2">{{ collection.title }}</h1>
         <div class="flex justify-between items-center gap-4 py-2 mb-2">
           <div class="hidden lg:block text-sm text-brand-gray">
             <div>

@@ -1,7 +1,8 @@
 <!-- Collection -->
 <section class="mt-10">
   <div class="container">
-    <h1 class="h2 mb-2">Collections</h1>
+    {% render 'breadcrumb' %}
+    <h1 class="h2 mb-3">Collections</h1>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
       {% for collection in collections %}
         <div class="relative border border-brand-silver-400 rounded-2xl overflow-clip group">
