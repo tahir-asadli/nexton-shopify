@@ -11,11 +11,6 @@
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
-    "cart_drawer_mYYY9p": {
-      "type": "cart-drawer",
-      "name": "Card Drawer",
-      "settings": {}
-    },
     "footer": {
       "type": "footer",
       "blocks": {
@@ -82,7 +77,19 @@
             "mobile_column_span": 1,
             "gap": 5
           },
-          "blocks": {}
+          "blocks": {
+            "menu_FHnbmW": {
+              "type": "menu",
+              "name": "Menu",
+              "settings": {
+                "menu": "collections"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "menu_FHnbmW"
+          ]
         },
         "column_R6fWb7": {
           "type": "column",
@@ -94,7 +101,19 @@
             "mobile_column_span": 1,
             "gap": 5
           },
-          "blocks": {}
+          "blocks": {
+            "menu_4r9iyt": {
+              "type": "menu",
+              "name": "Menu",
+              "settings": {
+                "menu": "resources"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "menu_4r9iyt"
+          ]
         }
       },
       "block_order": [
@@ -134,6 +153,11 @@
         "payments_HEWybC"
       ],
       "name": "Footer Info",
+      "settings": {}
+    },
+    "cart_drawer_mYYY9p": {
+      "type": "cart-drawer",
+      "name": "Card Drawer",
       "settings": {}
     }
   },
