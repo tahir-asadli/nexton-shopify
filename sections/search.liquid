@@ -12,7 +12,7 @@
       {% if search.results_count == 0 %}
         <p class="text-sm text-brand-gray-400 text-center">{{ 'search.no_results_html' | t: terms: search.terms }}</p>
       {% else %}
-        {% paginate search.results by 3 %}
+        {% paginate search.results by 12 %}
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
             {% for result in search.results %}
               {% if result.object_type == 'product' %}

@@ -9,7 +9,7 @@
     {% render 'breadcrumb' %}
     <h1 class="h2 mb-3">{{ blog.title }}</h1>
     <div>
-      {% paginate blog.articles by 2 %}
+      {% paginate blog.articles by 12 %}
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-5">
           {% for article in blog.articles %}
             <div class="relative border border-brand-silver-400 rounded-2xl overflow-clip group">

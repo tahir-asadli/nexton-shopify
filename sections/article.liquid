@@ -13,8 +13,8 @@
     {% if article.image %}
       {{
         article.image
-        | image_url: width: 1200, crop: 'top'
-        | image_tag: class: 'w-full h-100 my-4 object-cover rounded-lg object-top'
+        | image_url: width: 1200, crop: 'center'
+        | image_tag: class: 'w-full h-100 my-4 object-cover rounded-lg object-center'
       }}
     {% endif %}
 
@@ -32,7 +32,7 @@
         <h3>{{ 'blog.article_comments' | t }}</h3>
 
         <div class="flex flex-col gap-2 mt-2" id="comments">
-          {% paginate article.comments by 3 %}
+          {% paginate article.comments by 12 %}
             {% for comment in article.comments %}
               <div class="group">
                 <p class="text-brand-blue-600">{{ comment.author }}</p>

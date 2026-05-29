@@ -154,7 +154,7 @@ class HeroSlider extends HTMLElement {
       pagination: true,
       arrows: false,
       autoplay: true,
-      interval: 2000,
+      interval: 10000,
       speed: 2000
 
     }).mount();
