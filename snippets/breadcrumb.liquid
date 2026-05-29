@@ -10,6 +10,8 @@
       {%- when 'product' -%}
         {% assign first_collection = product.collections | first %}
         {%- if first_collection.url -%}
+          <a class="text-brand-gray-600" href="{{ routes.collections_url }}">Collections</a>
+          <span class="text-gray-300 text-xs">/</span>
           <a href="{{ first_collection.url }}" class="text-brand-gray-600">{{ first_collection.title }}</a>
           <span class="text-gray-300 text-xs">/</span>
         {%- endif -%}

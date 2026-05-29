@@ -4,10 +4,26 @@
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/page
 {% endcomment %}
+<section>
+  <div class="container mt-10">
+    {% render 'breadcrumb' %}
+    <h1 class="h2 mb-3">{{ page.title }}</h1>
 
-<h1>{{ page.title }}</h1>
+    {% comment %}
+      {% if article.image %}
+        {{
+          article.image
+          | image_url: width: 1200, crop: 'top'
+          | image_tag: class: 'w-full h-100 my-4 object-cover rounded-lg object-top'
+        }}
+      {% endif %}
+    {% endcomment %}
 
-{{ page.content }}
+    <div class="flex flex-col gap-4 html-content">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
 
 {% schema %}
 {
