@@ -351,6 +351,10 @@
   product-dialog dialog {
     @apply m-auto;
   }
+
+  dialog .breadcrumb {
+    @apply hidden!;
+  }
 }
 @layer utilities {
   .container {
